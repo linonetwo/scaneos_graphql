@@ -10,12 +10,15 @@ export function getFirstBlockIdFromBlockListResponse(data: Object) {
   }
   return null;
 }
+export function getBlockByBlockNum(blockNum: number) {
+  return get(`/blocks?block_num=${blockNum}`);
+}
 
 async function block(
   _: any,
   { blockNum, id, blockNumOrID }: { blockNum?: number, id?: string, blockNumOrID: number | string },
 ) {
-  if (typeof blockNum === 'number') return get(`/blocks?block_num=${blockNum}`);
+  if (typeof blockNum === 'number') return getBlockByBlockNum(blockNum);
   if (typeof blockNumOrID === 'number' || Number.isFinite(Number(blockNumOrID)))
     return get(`/blocks?block_num=${blockNumOrID}`);
   // 尝试把 blockID 转换成「区块高度 blockNum」

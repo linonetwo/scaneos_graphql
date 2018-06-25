@@ -1,7 +1,11 @@
 type Query {
+  search(keyWord: String!): SearchResult!
+
   blocks: [Block!]!
-  block(id: ID!): Block
+  block(blockNum: Int, id: ID, blockNumOrID: String): Block
 }
+
+union SearchResult = Block
 
 type Block {
   blockNum: Int!
