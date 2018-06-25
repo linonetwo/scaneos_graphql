@@ -1,0 +1,15 @@
+type Query {
+  blocks: [Block!]!
+  block(id: ID!): Block
+}
+
+type Block {
+  blockNum: Int!
+  blockId: String!
+  prevBlockId: String
+  timestamp: String!
+  transactionMerkleRoot: String!
+  producerAccountId: String!
+  pending: Boolean!
+  transactions: [String]!
+}
