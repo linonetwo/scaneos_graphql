@@ -2,7 +2,7 @@
 import get from '../../../API.config';
 import { searchKeyWord } from './search';
 
-import type { ListResponse } from './types';
+import type { ListResponse, Block } from './types.flow';
 
 function getFirstBlockIdFromBlockListResponse(data: Object) {
   if (data?.content?.length >= 1 && typeof data.content[0].blockNum === 'number') {
@@ -33,7 +33,7 @@ async function block(
 
 async function blocks(_: any, { page, pageSize }: { page?: number, pageSize?: number }) {
   const gotoPage = page ? page - 1 : 0;
-  const data: ListResponse<Object> = await get(`/blocks?page=${gotoPage}&size=${pageSize || 60}`);
+  const data: ListResponse<Block> = await get(`/blocks?page=${gotoPage}&size=${pageSize || 60}`);
   const {
     content,
     page: { totalElements },
