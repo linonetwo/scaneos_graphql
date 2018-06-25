@@ -4,7 +4,7 @@ import { searchKeyWord } from './search';
 
 import type { ListResponse, Block } from './types.flow';
 
-function getFirstBlockIdFromBlockListResponse(data: Object) {
+export function getFirstBlockIdFromBlockListResponse(data: Object) {
   if (data?.content?.length >= 1 && typeof data.content[0].blockNum === 'number') {
     return { blockNum: data.content[0].blockNum, blockId: data.content[0].blockId };
   }

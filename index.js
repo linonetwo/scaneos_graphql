@@ -7,6 +7,13 @@ require('@babel/register')({
     '@babel/plugin-proposal-do-expressions',
     '@babel/plugin-proposal-optional-chaining',
     'lodash',
+    'transform-decorators-legacy',
+    [
+      'flow-runtime',
+      {
+        warn: true,
+      },
+    ],
   ],
 });
 
