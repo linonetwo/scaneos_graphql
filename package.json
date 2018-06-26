@@ -4,12 +4,11 @@
   "description": "A gateway for all ScanEOS REST API.",
   "main": "server.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --delay 0.9 ./index.js",
-    "start": "NODE_ENV=production node ./index.js",
-    "serve": "yarn gql-gen && yarn gql2flow && yarn start",
+    "start": "yarn gql-gen && yarn gql2flow && NODE_ENV=development nodemon --delay 0.9 ./index.dev.js",
+    "serve": "NODE_ENV=production node ./index.prod.js",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
     "gql-gen": "mkdir -p ./server/generated && apollo-codegen introspect-schema ./server/schema.graphql --output ./server/generated/schema.json",
-    "gql2flow": "gql2ts ./server/generated/schema.json -e $PWD/scripts/@gql2ts-language-flow.js -o ./server/generated/types.flow.js && prettier-eslint \"./server/generated/*.js\" --write"
+    "gql2flow": "gql2ts ./server/generated/schema.json -e $PWD/scripts/@gql2ts-language-flow.js -o ./server/generated/types.flow.js --ignore-type-name-declaration && prettier-eslint \"./server/generated/*.js\" --write"
   },
   "dependencies": {
     "apollo-server-express": "^1.3.6",

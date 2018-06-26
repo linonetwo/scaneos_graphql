@@ -1,5 +1,5 @@
 require('@babel/register')({
-  ignore: [/\/build\//],
+  ignore: [/\/(build|node_modules)\//],
   presets: ['@babel/env', 'react-app'],
   plugins: [
     '@babel/plugin-syntax-dynamic-import',
@@ -7,15 +7,7 @@ require('@babel/register')({
     '@babel/plugin-proposal-do-expressions',
     '@babel/plugin-proposal-optional-chaining',
     'lodash',
-    'transform-decorators-legacy',
-    [
-      'flow-runtime',
-      {
-        warn: true,
-      },
-    ],
   ],
 });
 
-// Now that the nonsense is over... load up the server entry point
 require('./server');
