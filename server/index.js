@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { ApolloEngine } from 'apollo-engine';
 import { makeExecutableSchema } from 'graphql-tools';
 
 import resolvers from './resolvers';
@@ -31,8 +32,17 @@ app.use(
 // GraphiQL, a visual editor for queries
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-app.listen(3000, () => {
-  console.log(
-    'GraphQL Gateway running in http://localhost:3000/graphiql\nAnd you can try http://localhost:3000/graphiql to run queries!',
-  );
+const engine = new ApolloEngine({
+  apiKey: 'service:scaneos10:gocYImnKEB7SiPGhFsJZIA',
 });
+engine.listen(
+  {
+    port: 3000,
+    expressApp: app,
+  },
+  () => {
+    console.log(
+      'GraphQL Gateway running in http://localhost:3000/graphiql\nAnd you can try http://localhost:3000/graphiql to run queries!',
+    );
+  },
+);

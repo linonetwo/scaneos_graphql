@@ -13,6 +13,7 @@
     "gqlJson2flow": "gql2ts ./server/generated/schema.json -e $PWD/scripts/@gql2ts-language-flow.js -o ./server/generated/types.flow.js --ignore-type-name-declaration && prettier-eslint \"./server/generated/*.js\" --write"
   },
   "dependencies": {
+    "apollo-engine": "^1.1.2",
     "apollo-server-express": "^1.3.6",
     "body-parser": "^1.18.3",
     "camelize": "^1.0.0",
