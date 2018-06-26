@@ -1,0 +1,71 @@
+# import BP from "./bp.graphql"
+
+type Permission {
+  actor: String
+  permission: String
+}
+type Accounts {
+  permission: Permission
+  weight: Int
+}
+type NetLimit {
+  used: Int
+  available: Int
+  max: Int
+}
+type RequiredAuth {
+  threshold: Int
+  keys: [String]
+  accounts: [Accounts]!
+  waits: [String]
+}
+type Permissions {
+  permName: String
+  parent: String
+  requiredAuth: RequiredAuth
+}
+type SelfDelegatedBandwidth {
+  from: String
+  to: String
+  netWeight: Int
+  cpuWeight: Int
+}
+type TotalResources {
+  owner: String
+  netWeight: Int
+  cpuWeight: Int
+  ramBytes: Int
+}
+type VoterInfo {
+  owner: String
+  proxy: String
+  producers: [String]!
+  staked: Int
+  lastVoteWeight: String
+  proxiedVoteWeight: String
+  isProxy: Int
+  unstaking: Int
+}
+type Account {
+  bp: BP
+
+  tokenBalance: String
+  accountName: String
+  headBlockNum: Int
+  headBlockTime: String
+  privileged: Boolean
+  lastCodeUpdate: String
+  created: String
+  coreLiquidBalance: String
+  ramQuota: Int
+  netWeight: Int
+  cpuWeight: Int
+  netLimit: NetLimit
+  cpuLimit: NetLimit
+  ramUsage: Int
+  permissions: [Permissions]!
+  totalResources: TotalResources
+  selfDelegatedBandwidth: SelfDelegatedBandwidth
+  refundRequest: String
+  voterInfo: VoterInfo
+}

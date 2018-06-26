@@ -1,0 +1,36 @@
+type Image {
+  name: String
+  title: String
+  type: String
+  width: Int
+  height: Int
+  size: Int
+  dateUploaded: String
+  url: String!
+  thumbnailUrl: String
+}
+
+type BP {
+  name: String
+  homepage: String
+  contact: String
+  account: String
+  introductionZh: String
+  nameZh: String
+  slogan: String
+  sloganZh: String
+  key: String
+  organization: String
+  nodes: String
+  logo: Image
+  locationZh: String
+  organizationIntroduction: String
+  organizationIntroductionZh: String
+  introduction: String
+  coreteam: String
+  others: String
+  latitude: Int
+  longitude: Int
+  location: String
+  image: Image
+}

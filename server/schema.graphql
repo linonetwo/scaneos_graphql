@@ -1,8 +1,12 @@
+# import Account from "./graphql/account.graphql"
+
 type Query {
   search(keyWord: String!): SearchResult!
 
   blocks: [Block!]!
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
+
+  account(name: String!): Account
 }
 
 union SearchResult = Block
