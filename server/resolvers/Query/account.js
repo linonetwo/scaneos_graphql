@@ -32,19 +32,19 @@ async function getBPDetailFromCMS(accountName: string) {
   return null;
 }
 
-
 export default {
   account(_: any, { name }: { name: string }) {
     return postEOS('/chain/get_account', { account_name: name });
   },
 };
 export const Account = {
-  tokenBalance({ name }: { name: string }) {
-    return postEOS('/chain/get_currency_balance', { account: name, code: 'eosio.token' }).then(balanceData =>
+  tokenBalance({ accountName }: { accountName: string }) {
+    return postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }).then(balanceData =>
       balanceData.join(', '),
     );
   },
-  bp({ name }: { name: string }) {
-    return getBPDetailFromCMS(name);
+  bp({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
+    cacheControl.setCacheHint({ maxAge: 60 });
+    return getBPDetailFromCMS(accountName);
   },
 };
