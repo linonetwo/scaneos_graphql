@@ -23,7 +23,7 @@ app.use(
   bodyParser.json(),
   graphqlExpress({
     schema,
-    context: { ...api },
+    context: {},
     tracing: true,
     cacheControl: true,
   }),
