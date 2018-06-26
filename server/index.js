@@ -33,7 +33,7 @@ app.use(
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 const engine = new ApolloEngine({
-  apiKey: 'service:scaneos10:gocYImnKEB7SiPGhFsJZIA',
+  apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
 });
 engine.listen(
   {
