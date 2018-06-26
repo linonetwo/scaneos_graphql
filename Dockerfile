@@ -1,5 +1,5 @@
 # Dockerfile.alpine
-FROM mhart/alpine-node:10.4.0
+FROM mhart/alpine-node:10.4.1
 
 # Create app directory
 RUN mkdir -p /usr/src/app
