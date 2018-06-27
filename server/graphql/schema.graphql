@@ -1,11 +1,15 @@
-# import Account, AccountsList, NameAuction, NameAuctionsList from "./graphql/account.graphql"
-# import BPInfo from "./graphql/bp.graphql"
+# import Account, AccountsList, NameAuction, NameAuctionsList from "./account.graphql"
+# import BPInfo from "./bp.graphql"
+# import Action, ActionsList from "./action.graphql"
 
 type Query {
   search(keyWord: String!): SearchResult!
 
   blocks: [Block!]!
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
+
+  actions: ActionsList!
+  action(id: String): Action
 
   account(name: String!): Account
   accounts: AccountsList!

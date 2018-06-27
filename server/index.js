@@ -8,7 +8,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import resolvers from './resolvers';
 // Import schema.graphql by relative path to where we run "yarn start"
-const typeDefs = importSchema('./server/schema.graphql');
+const typeDefs = importSchema('./server/graphql/schema.graphql');
 // Put together a schema
 const schema = makeExecutableSchema({
   typeDefs,

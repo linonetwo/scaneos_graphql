@@ -1,0 +1,22 @@
+# import PageInfo from "./pagination.graphql"
+
+type Authorization {
+  permission: String
+  actor: String
+}
+
+type Action {
+  # 数据库中的 ID | ID of db entry
+  id: String
+  actionID: Int
+  transactionID: String
+  authorization: [Authorization!]!
+  handlerAccountName: String
+  name: String
+  data: String
+  createdAt: String
+}
+type ActionsList {
+  actions: [Action!]
+  pageInfo: PageInfo
+}
