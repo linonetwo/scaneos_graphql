@@ -11,7 +11,7 @@ export async function getAccountByName(accountName: string) {
 
   if (!data) throw new Error('No data.');
 
-  this.initAccountData({ ...data, tokenBalance: balanceData.join(', ') });
+  return { ...data, tokenBalance: balanceData.join(', ') };
 }
 const getBPList = () =>
   postEOS('/chain/get_table_rows', {
@@ -53,11 +53,12 @@ async function getBPDetailFromCMS(accountName: string) {
 
 export default {
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
-    return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`)
-      .then(({ content, page: { totalPages } }) => ({
+    return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+      ({ content, page: { totalPages } }) => ({
         accounts: content.map(data => ({ accountName: data.data.name, createdAt: data.createdAt })),
         pageInfo: { totalPages },
-      }));
+      }),
+    );
   },
   account(_: any, { name }: { name: string }) {
     return postEOS('/chain/get_account', { account_name: name });

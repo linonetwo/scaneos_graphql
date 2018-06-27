@@ -40,15 +40,16 @@ export default {
       const { getTransactionByID } = await import('./transaction');
       return { __typename: 'Transaction', ...(await getTransactionByID(keyWord)) };
     }
+    const { getAccountByName } = await import('./account');
     if (keyWord.length === 53) {
       // 还可能是账号公钥
       const data = await postEOS('/history/get_key_accounts', { key: keyWord });
       if (data.accountNames.length > 0) {
-        const { getAccountByName } = await import('./account');
         // 目前先取这个公钥下的第一个账号，如果真的会有多个账号我们可以返回列表？
-        return { __typename: 'Account', ...getAccountByName(data.accountNames[0]) };
+        return { __typename: 'Account', ...(await getAccountByName(data.accountNames[0])) };
       }
     }
     // 其他目前默认是账户名
+    return { __typename: 'Account', ...(await getAccountByName(keyWord)) };
   },
 };
