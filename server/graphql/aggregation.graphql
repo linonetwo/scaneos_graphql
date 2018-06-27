@@ -1,4 +1,4 @@
-type EOSGlobalStats {
+type GlobalStatus {
   maxBlockNetUsage: Int
   targetBlockNetUsagePct: Int
   maxTransactionNetUsage: Int
@@ -29,13 +29,9 @@ type EOSGlobalStats {
   lastProducerScheduleSize: Int
   totalProducerVoteWeight: Float
   lastNameClose: String
-}
 
-type BlockChainStatus {
   blockNumber: Int
   transactionNumber: Int
   accountNumber: Int
   actionNumber: Int
 }
-
-union GlobalStatus = EOSGlobalStats | BlockChainStatus
