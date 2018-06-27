@@ -93,7 +93,28 @@ export default {
     );
   },
   nameAuction(_: any, { name }: { name: string }) {
-    return get(`/accounts/biddingaccount?name=${name}`).then(formatAuctionData);
+    return get(`/accounts/biddingaccount?name=${name}`)
+      .then(formatAuctionData)
+      .catch(() =>
+        postEOS('/chain/get_table_rows', {
+          json: true,
+          scope: 'eosio',
+          code: 'eosio',
+          table: 'namebids',
+          lower_bound: name,
+          limit: 1,
+        }).then(({ rows }) => {
+          let searchResult = {};
+          if (rows && rows.length > 0) {
+            searchResult = formatAuctionData(rows[0]);
+          }
+          return {
+            notInAuction: true,
+            ...searchResult,
+            newName: searchResult.newname,
+          };
+        }),
+      );
   },
 };
 export const Account = {

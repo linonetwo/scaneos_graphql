@@ -78,9 +78,10 @@ type AccountsList {
 }
 
 type NameAuction {
+  notInAuction: Boolean
   newName: String
   highBidder: String
-  highBid: Int
+  highBid: Float
   lastBidTime: String
 }
 type NameAuctionsList {
