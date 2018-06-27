@@ -69,6 +69,8 @@ type Account {
   selfDelegatedBandwidth: SelfDelegatedBandwidth
   refundRequest: String
   voterInfo: VoterInfo
+
+  createdAt: String
 }
 type AccountsList {
   accounts: [Account!]

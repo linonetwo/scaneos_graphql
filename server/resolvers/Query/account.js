@@ -61,8 +61,12 @@ export default {
         console.log(aaa);
         return aaa;
       })
-      .then(({ content: accounts, page: { totalPages } }) => ({ accounts, pageInfo: { totalPages } }));
+      .then(({ content, page: { totalPages } }) => ({
+        accounts: content.map(data => ({ accountName: data.name, createdAt: data.createdAt })),
+        pageInfo: { totalPages },
+      }));
   },
+
   async producers(root: any, args: any, context: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
 
