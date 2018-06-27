@@ -1,6 +1,7 @@
 // @flow
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 import { searchKeyWord } from './search';
+import { getTransactionByID } from './transaction';
 
 export function getFirstBlockIdFromBlockListResponse(data: Object) {
   if (data?.content?.length >= 1 && typeof data.content[0].blockNum === 'number') {
@@ -21,9 +22,9 @@ export function getBlockByBlockNum(blockNum: number) {
 }
 
 export const Block = {
-  blockNum: {
-    description: async () => '区块高度',
-    resolve: a => a,
+  transactions: {
+    description: async () => '交易列表 | Transactions',
+    resolve: ({ transactions: transactionIDs }) => transactionIDs.map(getTransactionByID),
   },
 };
 export default {

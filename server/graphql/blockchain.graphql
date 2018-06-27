@@ -10,7 +10,7 @@ type Block {
   transactionMerkleRoot: String!
   producerAccountID: String!
   pending: Boolean!
-  transactions: [String]!
+  transactions: [Transaction!]
 }
 type BlocksList {
   blocks: [Block!]
@@ -18,7 +18,7 @@ type BlocksList {
 }
 
 type Transaction {
-  actions: [String]
+  actions: [Action!]
   transactionID: String
   sequenceNum: Int
   blockID: String

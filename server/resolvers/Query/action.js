@@ -7,6 +7,10 @@ const formatActionData = ({ actionId, transactionId, data, ...rest }) => ({
   data: JSON.stringify(data, null, '  '),
   ...rest,
 });
+export function getActionByID(id: string) {
+  return get(`/actions?id=${id}`).then(formatActionData);
+}
+
 export default {
   actions(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
@@ -17,6 +21,6 @@ export default {
     );
   },
   action(_: any, { id }: { id: string }) {
-    return get(`/actions?id=${id}`).then(formatActionData);
+    return getActionByID(id);
   },
 };
