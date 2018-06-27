@@ -2,10 +2,13 @@
 # import BPInfo from "./bp.graphql"
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 # import Price, PriceChart from "./price.graphql"
+# import GlobalStatus from "./aggregation.graphql"
+
 union SearchResult = Block | Transaction | Account
 
 type Query {
   search(keyWord: String!): SearchResult!
+  status: GlobalStatus!
 
   blocks: BlocksList!
   block(blockNum: Int, id: ID, blockNumOrID: String): Block

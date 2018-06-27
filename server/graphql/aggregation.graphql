@@ -1,0 +1,41 @@
+type EOSGlobalStats {
+  maxBlockNetUsage: Int
+  targetBlockNetUsagePct: Int
+  maxTransactionNetUsage: Int
+  basePerTransactionNetUsage: Int
+  netUsageLeeway: Int
+  contextFreeDiscountNetUsageNum: Int
+  contextFreeDiscountNetUsageDen: Int
+  maxBlockCpuUsage: Int
+  targetBlockCpuUsagePct: Int
+  maxTransactionCpuUsage: Int
+  minTransactionCpuUsage: Int
+  maxTransactionLifetime: Int
+  deferredTrxExpirationWindow: Int
+  maxTransactionDelay: Int
+  maxInlineActionSize: Int
+  maxInlineActionDepth: Int
+  maxAuthorityDepth: Int
+  maxRamSize: Int
+  totalRamBytesReserved: Int
+  totalRamStake: Int
+  lastProducerScheduleUpdate: String
+  lastPervoteBucketFill: String
+  pervoteBucket: Int
+  perblockBucket: Int
+  totalUnpaidBlocks: Int
+  totalActivatedStake: Int
+  threshActivatedStakeTime: String
+  lastProducerScheduleSize: Int
+  totalProducerVoteWeight: Float
+  lastNameClose: String
+}
+
+type BlockChainStatus {
+  blockNumber: Int
+  transactionNumber: Int
+  accountNumber: Int
+  actionNumber: Int
+}
+
+union GlobalStatus = EOSGlobalStats | BlockChainStatus
