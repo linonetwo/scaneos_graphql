@@ -1,16 +1,14 @@
 # import Account, AccountsList, NameAuction, NameAuctionsList from "./account.graphql"
 # import BPInfo from "./bp.graphql"
-# import Action, ActionsList from "./action.graphql"
-# import Block, BlocksList from "./block.graphql"
-
-union SearchResult = Block
+# import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 
 type Query {
   search(keyWord: String!): SearchResult!
 
-  block(blockNum: Int, id: ID, blockNumOrID: String): Block
   blocks: BlocksList!
-
+  block(blockNum: Int, id: ID, blockNumOrID: String): Block
+  transactions: TransactionsList!
+  transaction(id: String): Transaction
   actions: ActionsList!
   action(id: String): Action
 

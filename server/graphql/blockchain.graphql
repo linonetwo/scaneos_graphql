@@ -1,0 +1,57 @@
+# import PageInfo from "./pagination.graphql"
+
+union SearchResult = Block
+
+type Block {
+  blockNum: Int!
+  blockID: String!
+  prevBlockID: String
+  timestamp: String!
+  transactionMerkleRoot: String!
+  producerAccountID: String!
+  pending: Boolean!
+  transactions: [String]!
+}
+type BlocksList {
+  blocks: [Block!]
+  pageInfo: PageInfo
+}
+
+type Transaction {
+  actions: [String]
+  transactionID: String
+  sequenceNum: Int
+  blockID: String
+  refBlockNum: Int
+  refBlockPrefix: Int
+  status: String
+  expiration: String
+  pending: Boolean
+  createdAt: String
+  type: String
+  updatedAt: String
+}
+type TransactionsList {
+  transactions: [Transaction!]
+  pageInfo: PageInfo
+}
+
+type Authorization {
+  permission: String
+  actor: String
+}
+type Action {
+  # 数据库中的 ID | ID of db entry
+  id: String
+  actionID: Int
+  transactionID: String
+  authorization: [Authorization!]!
+  handlerAccountName: String
+  name: String
+  data: String
+  createdAt: String
+}
+type ActionsList {
+  actions: [Action!]
+  pageInfo: PageInfo
+}

@@ -27,6 +27,14 @@ export const Block = {
   },
 };
 export default {
+  blocks(_: any, { page, size }: { page?: number, size?: number }) {
+    return get(`/blocks?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+      ({ content, page: { totalPages } }) => ({
+        blocks: content.map(formatBlockData),
+        pageInfo: { totalPages },
+      }),
+    );
+  },
   block(_: any, { blockNum, id, blockNumOrID }: { blockNum?: number, id?: string, blockNumOrID?: number | string }) {
     if (typeof blockNum === 'number') return getBlockByBlockNum(blockNum);
     if (typeof blockNumOrID === 'number' || Number.isFinite(Number(blockNumOrID)))
@@ -46,13 +54,5 @@ export default {
           ),
         );
       });
-  },
-  blocks(_: any, { page, size }: { page?: number, size?: number }) {
-    return get(`/blocks?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
-        blocks: content.map(formatBlockData),
-        pageInfo: { totalPages },
-      }),
-    );
   },
 };

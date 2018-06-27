@@ -52,9 +52,6 @@ async function getBPDetailFromCMS(accountName: string) {
 }
 
 export default {
-  account(_: any, { name }: { name: string }) {
-    return postEOS('/chain/get_account', { account_name: name });
-  },
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`)
       .then(({ content, page: { totalPages } }) => ({
@@ -62,7 +59,9 @@ export default {
         pageInfo: { totalPages },
       }));
   },
-
+  account(_: any, { name }: { name: string }) {
+    return postEOS('/chain/get_account', { account_name: name });
+  },
   async producers(root: any, args: any, context: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
 

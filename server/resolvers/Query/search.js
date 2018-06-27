@@ -9,6 +9,12 @@ export async function searchKeyWord(param: { keyWord: string, type: string }) {
   return get(`/search?type=${type}&id=${keyWord}`);
 }
 
+export const SearchResult = {
+  __resolveType(data) {
+    return data.__typename;
+  },
+};
+
 export default {
   async search(_: any, { keyWord }: { keyWord: string }) {
     const { getBlockByBlockNum, getFirstBlockIdFromBlockListResponse } = await import('./block');
