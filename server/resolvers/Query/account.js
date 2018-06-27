@@ -82,7 +82,9 @@ export const Account = {
       get(`/actions/transfer?account=${accountName}&page=0&size=9999`),
       get(`/actions/newtoken?issuer=${accountName}&page=0&size=9999`),
     ]).then(actionsTypes => {
-      const actions = flatten(actionsTypes.map(({ content }) => content)).map(formatActionData);
+      const actions = flatten(actionsTypes.map(({ content }) => content))
+        .map(formatActionData)
+        .filter(({ transactionID }) => transactionID);
       return {
         actions,
         pageInfo: {},

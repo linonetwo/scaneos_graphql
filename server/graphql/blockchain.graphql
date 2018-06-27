@@ -21,7 +21,7 @@ type Transaction {
   sequenceNum: Int
   blockID: String
   refBlockNum: Int
-  refBlockPrefix: Int
+  refBlockPrefix: Float
   status: String
   expiration: String
   pending: Boolean
@@ -43,6 +43,7 @@ type Action {
   id: String
   actionID: Int
   transactionID: String
+  transaction: Transaction
   authorization: [Authorization!]!
   handlerAccountName: String
   name: String
