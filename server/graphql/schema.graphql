@@ -1,32 +1,22 @@
 # import Account, AccountsList, NameAuction, NameAuctionsList from "./account.graphql"
 # import BPInfo from "./bp.graphql"
 # import Action, ActionsList from "./action.graphql"
+# import Block, BlocksList from "./block.graphql"
+
+union SearchResult = Block
 
 type Query {
   search(keyWord: String!): SearchResult!
 
-  blocks: [Block!]!
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
+  blocks: BlocksList!
 
   actions: ActionsList!
   action(id: String): Action
 
   account(name: String!): Account
   accounts: AccountsList!
-  producers: [BPInfo]!
   nameAuction(name: String!): NameAuction
   nameAuctions: NameAuctionsList!
-}
-
-union SearchResult = Block
-
-type Block {
-  blockNum: Int!
-  blockId: String!
-  prevBlockId: String
-  timestamp: String!
-  transactionMerkleRoot: String!
-  producerAccountId: String!
-  pending: Boolean!
-  transactions: [String]!
+  producers: [BPInfo]!
 }

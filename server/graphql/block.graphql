@@ -1,0 +1,16 @@
+# import PageInfo from "./pagination.graphql"
+
+type Block {
+  blockNum: Int!
+  blockID: String!
+  prevBlockID: String
+  timestamp: String!
+  transactionMerkleRoot: String!
+  producerAccountID: String!
+  pending: Boolean!
+  transactions: [String]!
+}
+type BlocksList {
+  blocks: [Block!]
+  pageInfo: PageInfo
+}
