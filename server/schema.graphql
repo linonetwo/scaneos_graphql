@@ -1,4 +1,4 @@
-# import Account from "./graphql/account.graphql"
+# import Account, AccountsList from "./graphql/account.graphql"
 # import BPInfo from "./graphql/bp.graphql"
 
 type Query {
@@ -8,6 +8,7 @@ type Query {
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
 
   account(name: String!): Account
+  accounts: AccountsList!
   producers: [BPInfo]!
 }
 

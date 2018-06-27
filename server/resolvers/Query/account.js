@@ -1,7 +1,7 @@
 // @flow
-import { find, size, flatten, values, intersection } from 'lodash';
+import { find, size as objSize } from 'lodash';
 import camelize from 'camelize';
-import get, { postEOS, getCMS, CMS_BASE } from '../../../API.config';
+import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export async function getAccountByName(accountName: string) {
   const [data, balanceData] = await Promise.all([
@@ -23,14 +23,14 @@ const getBPList = () =>
   }).then(({ rows }) => rows);
 const mixBPDataWithCMSData = (bpData, cmsData) => {
   const { url, producerKey, ...rest } = bpData;
-  return { account: rest.owner, homepage: url, ...rest, ...cmsData, key: cmsData.key || producerKey };
+  return { account: rest.owner, homepage: url, ...rest, ...cmsData, key: cmsData?.key || producerKey };
 };
 
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
   const { data: blockProducersList } = await getCMS(`tables/bp/rows?filters[account][eq]=${accountName}`);
   const producerInfo = find(blockProducersList, { account: accountName });
-  if (size(producerInfo) > 0) {
+  if (objSize(producerInfo) > 0) {
     const blockProducerInfo = {
       ...producerInfo,
       latitude: producerInfo.latitude && Number(producerInfo.latitude),
@@ -47,6 +47,11 @@ async function getBPDetailFromCMS(accountName: string) {
 export default {
   account(_: any, { name }: { name: string }) {
     return postEOS('/chain/get_account', { account_name: name });
+  },
+  accounts(_: any, { page, size }: { page?: number, size?: number }) {
+    return get(
+      `/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
+    ).then(aaa => { console.log(aaa); return aaa}).then(({ content: accounts, page: { totalPages } }) => ({ accounts, pageInfo: { totalPages } }));
   },
   async producers(root: any, args: any, context: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });

@@ -2,6 +2,8 @@
 import fetch, { Request, Headers } from 'node-fetch';
 import camelize from 'camelize';
 
+export const PAGE_SIZE_DEFAULT = 60;
+
 export const API = 'https://scaneos.io/api';
 export const EOS_API = 'https://scaneos.io/eosapi/v1';
 export default (path: string) =>

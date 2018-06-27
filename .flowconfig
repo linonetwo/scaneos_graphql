@@ -7,7 +7,8 @@
 [lints]
 
 [options]
-esproposal.optional_chaining=ignore
-esproposal.decorators=ignore
+esproposal.optional_chaining=enable
+esproposal.nullish_coalescing=enable
+esproposal.decorators=enable
 
 [strict]
