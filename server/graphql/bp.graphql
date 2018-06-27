@@ -10,7 +10,24 @@ type Image {
   thumbnailUrl: String
 }
 
-type BP {
+type NodeLocation {
+  id: String
+  name: String
+}
+type Nodes {
+  location: NodeLocation
+  isProducer: Boolean!
+  p2pEndpoint: String!
+  apiEndpoint: String!
+  sslEndpoint: String!
+}
+
+type BPInfo {
+  totalVotes: String
+  isActive: Boolean
+  unpaidBlocks: Int
+  lastClaimTime: String
+
   name: String
   homepage: String
   contact: String
@@ -21,7 +38,7 @@ type BP {
   sloganZh: String
   key: String
   organization: String
-  nodes: String
+  nodes: [Nodes]
   logo: Image
   locationZh: String
   organizationIntroduction: String
@@ -29,8 +46,8 @@ type BP {
   introduction: String
   coreteam: String
   others: String
-  latitude: Int
-  longitude: Int
+  latitude: Float
+  longitude: Float
   location: String
   image: Image
 }

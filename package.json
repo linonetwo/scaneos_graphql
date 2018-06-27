@@ -4,7 +4,9 @@
   "description": "A gateway for all ScanEOS REST API.",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"nodemon --ignore ./server/generated/ -e graphql --exec 'yarn gql2flow'\" \"NODE_ENV=development nodemon --ignore ./server/generated/ -e js --delay 0.9 ./index.dev.js\"",
+    "docker-build": "docker build . -t scaneos_graphql",
+    "docker-run": "docker kill /scaneos_graphql && docker run -d --restart always --name scaneos_graphql -p 3130:3000 scaneos_graphql",
+    "start": "concurrently \"nodemon --ignore ./server/generated/ -e graphql --exec 'yarn gql2flow'\" \"NODE_ENV=development nodemon --ignore ./server/generated/ -e js,graphql --delay 0.9 ./index.dev.js\"",
     "serve": "NODE_ENV=production node ./index.prod.js",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
     "gql2flow": "yarn build-schema && yarn gql-gen && yarn gqlJson2flow",

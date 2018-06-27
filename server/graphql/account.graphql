@@ -1,4 +1,4 @@
-# import BP from "./bp.graphql"
+# import BPInfo from "./bp.graphql"
 
 type Permission {
   actor: String
@@ -47,7 +47,7 @@ type VoterInfo {
   unstaking: Int
 }
 type Account {
-  bp: BP
+  producerInfo: BPInfo
 
   tokenBalance: String
   accountName: String

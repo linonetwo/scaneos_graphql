@@ -1,5 +1,5 @@
 // @flow
-import fetch from 'node-fetch';
+import fetch, { Request, Headers } from 'node-fetch';
 import camelize from 'camelize';
 
 export const API = 'https://scaneos.io/api';
@@ -27,7 +27,6 @@ export const CMS_API = `${CMS_BASE}api/1.1/`;
 export const getCMS = (path: string) =>
   fetch(
     new Request(`${CMS_API}${path}`, {
-      mode: 'cors',
       headers: new Headers({ Authorization: `Bearer ${CMS_TOKEN}`, 'Content-Type': 'application/json' }),
     }),
   )

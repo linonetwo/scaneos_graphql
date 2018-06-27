@@ -17,6 +17,7 @@ export function getBlockByBlockNum(blockNum: number) {
 export const Block = {
   blockNum: {
     description: async () => '区块高度',
+    resolve: a => a,
   },
 };
 export default {

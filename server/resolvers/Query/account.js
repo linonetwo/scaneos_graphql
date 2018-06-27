@@ -1,5 +1,5 @@
 // @flow
-import { find, size } from 'lodash';
+import { find, size, flatten, values, intersection } from 'lodash';
 import camelize from 'camelize';
 import get, { postEOS, getCMS, CMS_BASE } from '../../../API.config';
 
@@ -13,6 +13,18 @@ export async function getAccountByName(accountName: string) {
 
   this.initAccountData({ ...data, tokenBalance: balanceData.join(', ') });
 }
+const getBPList = () =>
+  postEOS('/chain/get_table_rows', {
+    json: true,
+    code: 'eosio',
+    scope: 'eosio',
+    table: 'producers',
+    limit: 100000,
+  }).then(({ rows }) => rows);
+const mixBPDataWithCMSData = (bpData, cmsData) => {
+  const { url, producerKey, ...rest } = bpData;
+  return { account: rest.owner, homepage: url, ...rest, ...cmsData, key: cmsData.key || producerKey };
+};
 
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
@@ -36,6 +48,22 @@ export default {
   account(_: any, { name }: { name: string }) {
     return postEOS('/chain/get_account', { account_name: name });
   },
+  async producers(root: any, args: any, context: any, { cacheControl }: Object) {
+    cacheControl.setCacheHint({ maxAge: 60 });
+
+    const bpListPromise = getBPList().then(bpList =>
+      bpList.sort((a, b) => Number(b.totalVotes) - Number(a.totalVotes)),
+    );
+    const cmsListPromise = getCMS('tables/bp/rows').then(({ data }) => data);
+
+    const producerList = await Promise.all([bpListPromise, cmsListPromise]).then(([bpList, cmsList]) =>
+      bpList.map(bpData => {
+        const cmsData = find(cmsList, { account: bpData.owner }) || {};
+        return mixBPDataWithCMSData(bpData, cmsData);
+      }),
+    );
+    return producerList;
+  },
 };
 export const Account = {
   tokenBalance({ accountName }: { accountName: string }) {
@@ -43,8 +71,11 @@ export const Account = {
       balanceData.join(', '),
     );
   },
-  bp({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
+  producerInfo({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
-    return getBPDetailFromCMS(accountName);
+    return Promise.all([
+      getBPList().then(bpList => find(bpList, { owner: accountName })),
+      getBPDetailFromCMS(accountName),
+    ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
   },
 };
