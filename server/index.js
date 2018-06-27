@@ -30,7 +30,7 @@ app.use(
   }),
 );
 // GraphiQL, a visual editor for queries
-app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+app.use('/graphiql', graphiqlExpress({ endpointURL: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }));
 
 const engine = new ApolloEngine({
   apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
