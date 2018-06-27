@@ -70,8 +70,18 @@ type Account {
   refundRequest: String
   voterInfo: VoterInfo
 }
-
 type AccountsList {
-  accounts: [Account!]!
-  pageInfo: PageInfo!
+  accounts: [Account!]
+  pageInfo: PageInfo
+}
+
+type NameAuction {
+  newName: String
+  highBidder: String
+  highBid: Int
+  lastBidTime: String
+}
+type NameAuctionsList {
+  nameAuctions: [NameAuction!]
+  pageInfo: PageInfo
 }

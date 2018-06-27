@@ -26,6 +26,13 @@ const mixBPDataWithCMSData = (bpData, cmsData) => {
   return { account: rest.owner, homepage: url, ...rest, ...cmsData, key: cmsData?.key || producerKey };
 };
 
+const formatAuctionData = ({ lastBidTime, highBid, ...rest }) => ({
+  lastBidTime: Number(lastBidTime) / 1000 / 1000,
+  highBid: highBid / 10000,
+  ...rest,
+  id: undefined,
+});
+
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
   const { data: blockProducersList } = await getCMS(`tables/bp/rows?filters[account][eq]=${accountName}`);
@@ -49,9 +56,12 @@ export default {
     return postEOS('/chain/get_account', { account_name: name });
   },
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
-    return get(
-      `/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
-    ).then(aaa => { console.log(aaa); return aaa}).then(({ content: accounts, page: { totalPages } }) => ({ accounts, pageInfo: { totalPages } }));
+    return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`)
+      .then(aaa => {
+        console.log(aaa);
+        return aaa;
+      })
+      .then(({ content: accounts, page: { totalPages } }) => ({ accounts, pageInfo: { totalPages } }));
   },
   async producers(root: any, args: any, context: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
@@ -68,6 +78,18 @@ export default {
       }),
     );
     return producerList;
+  },
+
+  nameAuctions(_: any, { page, size }: { page?: number, size?: number }) {
+    return get(`/accounts/biddingaccounts?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+      ({ content, page: { totalPages } }) => ({
+        nameAuctions: content.map(formatAuctionData),
+        pageInfo: { totalPages },
+      }),
+    );
+  },
+  nameAuction(_: any, { name }: { name: string }) {
+    return get(`/accounts/biddingaccount?name=${name}`).then(formatAuctionData);
   },
 };
 export const Account = {
