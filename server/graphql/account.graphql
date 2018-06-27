@@ -1,5 +1,6 @@
 # import BPInfo from "./bp.graphql"
 # import PageInfo from "./pagination.graphql"
+# import ActionsList from "./blockchain.graphql"
 
 type Permission {
   actor: String
@@ -49,6 +50,7 @@ type VoterInfo {
 }
 type Account {
   producerInfo: BPInfo
+  actions(type: String, page: Int, size: Int): ActionsList!
 
   tokenBalance: String
   accountName: String

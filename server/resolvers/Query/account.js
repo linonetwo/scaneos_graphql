@@ -1,5 +1,5 @@
 // @flow
-import { find, size as objSize } from 'lodash';
+import { find, size as objSize, flatten } from 'lodash';
 import camelize from 'camelize';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
@@ -51,6 +51,45 @@ async function getBPDetailFromCMS(accountName: string) {
   return null;
 }
 
+export const Account = {
+  tokenBalance({ accountName }: { accountName: string }) {
+    return postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }).then(balanceData =>
+      balanceData.join(', '),
+    );
+  },
+  producerInfo({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
+    cacheControl.setCacheHint({ maxAge: 60 });
+    return Promise.all([
+      getBPList().then(bpList => find(bpList, { owner: accountName })),
+      getBPDetailFromCMS(accountName),
+    ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
+  },
+  async actions(
+    { accountName }: { accountName: string },
+    { type, page, size }: { type?: string, page?: number, size?: number },
+  ) {
+    const { formatActionData } = await import('./action');
+    if (type) {
+      return get(`/actions/${type}?account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+        ({ content, page: { totalPages } }) => ({
+          actions: content.map(formatActionData),
+          pageInfo: { totalPages },
+        }),
+      );
+    }
+    // TODO: 现在是尝试加载所有消息，但此处应该优化成带分页的
+    return Promise.all([
+      get(`/actions/transfer?account=${accountName}&page=0&size=9999`),
+      get(`/actions/newtoken?issuer=${accountName}&page=0&size=9999`),
+    ]).then(actionsTypes => {
+      const actions = flatten(actionsTypes.map(({ content }) => content)).map(formatActionData);
+      return {
+        actions,
+        pageInfo: {},
+      };
+    });
+  },
+};
 export default {
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
@@ -111,19 +150,5 @@ export default {
           };
         }),
       );
-  },
-};
-export const Account = {
-  tokenBalance({ accountName }: { accountName: string }) {
-    return postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }).then(balanceData =>
-      balanceData.join(', '),
-    );
-  },
-  producerInfo({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
-    cacheControl.setCacheHint({ maxAge: 60 });
-    return Promise.all([
-      getBPList().then(bpList => find(bpList, { owner: accountName })),
-      getBPDetailFromCMS(accountName),
-    ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
   },
 };

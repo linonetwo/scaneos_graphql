@@ -10,17 +10,17 @@ type Query {
   search(keyWord: String!): SearchResult!
   status: GlobalStatus!
 
-  blocks: BlocksList!
+  blocks(page: Int, size: Int): BlocksList!
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
-  transactions: TransactionsList!
+  transactions(page: Int, size: Int): TransactionsList!
   transaction(id: String): Transaction
-  actions: ActionsList!
+  actions(page: Int, size: Int): ActionsList!
   action(id: String): Action
 
   account(name: String!): Account
-  accounts: AccountsList!
+  accounts(page: Int, size: Int): AccountsList!
   nameAuction(name: String!): NameAuction
-  nameAuctions: NameAuctionsList!
+  nameAuctions(page: Int, size: Int): NameAuctionsList!
   producers: [BPInfo]!
 
   price: Price!
