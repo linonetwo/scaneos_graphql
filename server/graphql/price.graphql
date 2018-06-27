@@ -1,0 +1,22 @@
+type Price {
+  name: String
+  rank: Int
+  circulatingSupply: Float
+  totalSupply: Float
+  maxSupply: Float
+  updatedAt: String
+  marketCapUsd: Float
+  priceUsd: Float
+  volume24hUsd: Float
+  percentChange1h: Float
+  percentChange24h: Float
+  percentChange7d: Float
+}
+
+type PriceChart {
+  marketCapByAvailableSupply: [[String!]]
+  priceBtc: [[String!]]
+  pricePlatform: [[String!]]
+  priceUsd: [[String!]]
+  volumeUsd: [[String!]]
+}

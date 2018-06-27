@@ -1,6 +1,7 @@
 # import Account, AccountsList, NameAuction, NameAuctionsList from "./account.graphql"
 # import BPInfo from "./bp.graphql"
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
+# import Price, PriceChart from "./price.graphql"
 
 type Query {
   search(keyWord: String!): SearchResult!
@@ -17,4 +18,7 @@ type Query {
   nameAuction(name: String!): NameAuction
   nameAuctions: NameAuctionsList!
   producers: [BPInfo]!
+
+  price: Price!
+  priceChart: PriceChart!
 }
