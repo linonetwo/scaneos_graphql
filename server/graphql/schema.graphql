@@ -2,6 +2,7 @@
 # import BPInfo from "./bp.graphql"
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 # import Price, PriceChart from "./price.graphql"
+union SearchResult = Block | Transaction | Account
 
 type Query {
   search(keyWord: String!): SearchResult!
