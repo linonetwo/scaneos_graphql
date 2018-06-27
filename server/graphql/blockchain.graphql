@@ -20,6 +20,7 @@ type Transaction {
   transactionID: String
   sequenceNum: Int
   blockID: String
+  block: Block!
   refBlockNum: Int
   refBlockPrefix: Float
   status: String
@@ -43,7 +44,7 @@ type Action {
   id: String
   actionID: Int
   transactionID: String
-  transaction: Transaction
+  transaction: Transaction!
   authorization: [Authorization!]!
   handlerAccountName: String
   name: String

@@ -1,7 +1,5 @@
 // @flow
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
-import { searchKeyWord } from './search';
-import { getTransactionByID } from './transaction';
 
 export function getFirstBlockIdFromBlockListResponse(data: Object) {
   if (data?.content?.length >= 1 && typeof data.content[0].blockNum === 'number') {
@@ -20,11 +18,25 @@ const formatBlockData = ({ blockId, prevBlockId, producerAccountId, ...rest }) =
 export function getBlockByBlockNum(blockNum: number) {
   return get(`/blocks?block_num=${blockNum}`).then(formatBlockData);
 }
+export async function getBlockByBlockID(blockID: string) {
+  const { searchKeyWord } = await import('./search');
+  return searchKeyWord({ keyWord: blockID, type: 'block' })
+    .then(getFirstBlockIdFromBlockListResponse)
+    .then(firstBlockInResult => {
+      if (firstBlockInResult) {
+        return get(`/blocks?block_num=${firstBlockInResult.blockNum}`).then(formatBlockData);
+      }
+      return Promise.reject(new Error(`${String(blockID)} is not a block Number nor a block ID.`));
+    });
+}
 
 export const Block = {
   transactions: {
     description: async () => '交易列表 | Transactions',
-    resolve: ({ transactions: transactionIDs }) => transactionIDs.map(getTransactionByID),
+    resolve: async ({ transactions: transactionIDs }) => {
+      const { getTransactionByID } = await import('./transaction');
+      return transactionIDs.map(getTransactionByID);
+    },
   },
 };
 export default {
@@ -41,19 +53,6 @@ export default {
     if (typeof blockNumOrID === 'number' || Number.isFinite(Number(blockNumOrID)))
       return get(`/blocks?block_num=${String(blockNumOrID)}`).then(formatBlockData);
     // 尝试把 blockID 转换成「区块高度 blockNum」
-    return searchKeyWord({ keyWord: id || String(blockNumOrID), type: 'block' })
-      .then(getFirstBlockIdFromBlockListResponse)
-      .then(firstBlockInResult => {
-        if (firstBlockInResult) {
-          return get(`/blocks?block_num=${firstBlockInResult.blockNum}`).then(formatBlockData);
-        }
-        return Promise.reject(
-          new Error(
-            `${String(blockNumOrID)} is not a block Number nor a block ID.\nAnd blockNum === ${String(
-              blockNum,
-            )}\nid === ${String(id)}`,
-          ),
-        );
-      });
+    return getBlockByBlockID(id || String(blockNumOrID));
   },
 };

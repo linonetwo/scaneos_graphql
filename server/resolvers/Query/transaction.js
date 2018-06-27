@@ -17,6 +17,10 @@ export const Transaction = {
     description: async () => '消息列表 | Actions',
     resolve: ({ actions: actionIDs }) => actionIDs.map(getActionByID),
   },
+  async block({ blockID }: { blockID: string }) {
+    const { getBlockByBlockID } = await import('./block');
+    return getBlockByBlockID(blockID);
+  },
 };
 export default {
   transactions(_: any, { page, size }: { page?: number, size?: number }) {
