@@ -57,12 +57,8 @@ export default {
   },
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`)
-      .then(aaa => {
-        console.log(aaa);
-        return aaa;
-      })
       .then(({ content, page: { totalPages } }) => ({
-        accounts: content.map(data => ({ accountName: data.name, createdAt: data.createdAt })),
+        accounts: content.map(data => ({ accountName: data.data.name, createdAt: data.createdAt })),
         pageInfo: { totalPages },
       }));
   },
