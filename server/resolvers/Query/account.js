@@ -113,9 +113,9 @@ export default {
     const cmsListPromise = getCMS('tables/bp/rows').then(({ data }) => data);
 
     const producerList = await Promise.all([bpListPromise, cmsListPromise]).then(([bpList, cmsList]) =>
-      bpList.map(bpData => {
+      bpList.map((bpData, index) => {
         const cmsData = find(cmsList, { account: bpData.owner }) || {};
-        return mixBPDataWithCMSData(bpData, cmsData);
+        return { rank: index, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
     return producerList;

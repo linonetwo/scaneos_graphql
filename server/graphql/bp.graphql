@@ -23,6 +23,8 @@ type Nodes {
 }
 
 type BPInfo {
+  rank: Int
+
   totalVotes: String
   isActive: Boolean
   unpaidBlocks: Int
