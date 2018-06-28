@@ -1,4 +1,4 @@
-type Price {
+type EOSPrice {
   name: String
   rank: Int
   circulatingSupply: Float
@@ -13,10 +13,22 @@ type Price {
   percentChange7d: Float
 }
 
-type PriceChart {
+type EOSPriceChart {
   marketCapByAvailableSupply: [[String!]]
   priceBtc: [[String!]]
   pricePlatform: [[String!]]
   priceUsd: [[String!]]
   volumeUsd: [[String!]]
+}
+
+type ResourcePrice {
+  supply: Float
+  ramVolumn: Float
+  ramMarketcap: Float
+  ramPrice: Float
+  netPrice: Float
+  cpuPrice: Float
+}
+type ResourcePriceChart {
+  ramPrice: [[Float!]]!
 }
