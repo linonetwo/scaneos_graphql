@@ -20,9 +20,17 @@ const schema = makeExecutableSchema({
 const app = express();
 
 // The GraphQL data endpoint
+const whitelist = ['http://localhost:3000'];
+const corsOptions = {
+  origin(origin, callback) {
+    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(null, originIsWhitelisted);
+  },
+  credentials: true,
+};
 app.use(
   '/graphql',
-  cors(),
+  cors(corsOptions),
   bodyParser.json(),
   graphqlExpress({
     schema,
