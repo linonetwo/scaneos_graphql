@@ -1,5 +1,6 @@
 // @flow
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
@@ -21,6 +22,7 @@ const app = express();
 // The GraphQL data endpoint
 app.use(
   '/graphql',
+  cors(),
   bodyParser.json(),
   graphqlExpress({
     schema,
@@ -30,7 +32,10 @@ app.use(
   }),
 );
 // GraphiQL, a visual editor for queries
-app.use('/graphiql', graphiqlExpress({ endpointURL: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }));
+app.use(
+  '/graphiql',
+  graphiqlExpress({ endpointURL: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }),
+);
 
 const engine = new ApolloEngine({
   apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
