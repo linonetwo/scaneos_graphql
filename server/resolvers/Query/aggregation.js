@@ -1,6 +1,9 @@
 // @flow
 import get, { postEOS } from '../../../API.config';
 
+export const GlobalStatus = {
+  lastPervoteBucketFill: ({ lastPervoteBucketFill }) => Number(lastPervoteBucketFill) / 1000,
+};
 export default {
   status() {
     return Promise.all([

@@ -2,6 +2,8 @@
 # import PageInfo from "./pagination.graphql"
 # import ActionsList from "./blockchain.graphql"
 
+scalar DateTime
+
 type Permission {
   actor: String
   permission: String
@@ -55,10 +57,10 @@ type Account {
   tokenBalance: String
   accountName: String
   headBlockNum: Int
-  headBlockTime: String
+  headBlockTime: DateTime
   privileged: Boolean
-  lastCodeUpdate: String
-  created: String
+  lastCodeUpdate: DateTime
+  createdAt: DateTime
   coreLiquidBalance: String
   ramQuota: Int
   netWeight: Int
@@ -71,8 +73,6 @@ type Account {
   selfDelegatedBandwidth: SelfDelegatedBandwidth
   refundRequest: String
   voterInfo: VoterInfo
-
-  createdAt: String
 }
 type AccountsList {
   accounts: [Account!]
@@ -84,7 +84,7 @@ type NameAuction {
   newName: String
   highBidder: String
   highBid: Float
-  lastBidTime: String
+  lastBidTime: DateTime
 }
 type NameAuctionsList {
   nameAuctions: [NameAuction!]

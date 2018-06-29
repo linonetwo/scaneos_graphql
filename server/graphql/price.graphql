@@ -1,10 +1,16 @@
+scalar DateTime
+
+type ChartItem {
+  time: DateTime
+  value: Float
+}
+
 type EOSPrice {
   name: String
   rank: Int
   circulatingSupply: Float
   totalSupply: Float
   maxSupply: Float
-  updatedAt: String
   marketCapUsd: Float
   priceUsd: Float
   volume24hUsd: Float
@@ -14,11 +20,11 @@ type EOSPrice {
 }
 
 type EOSPriceChart {
-  marketCapByAvailableSupply: [[String!]]
-  priceBtc: [[String!]]
-  pricePlatform: [[String!]]
-  priceUsd: [[String!]]
-  volumeUsd: [[String!]]
+  marketCapByAvailableSupply: [ChartItem!]
+  priceBtc: [ChartItem!]
+  pricePlatform: [ChartItem!]
+  priceUsd: [ChartItem!]
+  volumeUsd: [ChartItem!]
 }
 
 type ResourcePrice {
@@ -30,5 +36,5 @@ type ResourcePrice {
   cpuPrice: Float
 }
 type ResourcePriceChart {
-  ramPrice: [[Float!]]!
+  ramPrice: [ChartItem!]!
 }

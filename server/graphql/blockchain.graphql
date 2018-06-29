@@ -1,10 +1,13 @@
 # import PageInfo from "./pagination.graphql"
 
+scalar JSON
+scalar DateTime
+
 type Block {
   blockNum: Int!
   blockID: String!
   prevBlockID: String
-  timestamp: String!
+  timestamp: DateTime!
   transactionMerkleRoot: String!
   producerAccountID: String!
   pending: Boolean!
@@ -24,11 +27,11 @@ type Transaction {
   refBlockNum: Int
   refBlockPrefix: Float
   status: String
-  expiration: String
+  expiration: DateTime
   pending: Boolean
-  createdAt: String
+  createdAt: DateTime
   type: String
-  updatedAt: String
+  updatedAt: DateTime
 }
 type TransactionsList {
   transactions: [Transaction!]
@@ -48,8 +51,8 @@ type Action {
   authorization: [Authorization!]!
   handlerAccountName: String
   name: String
-  data: String
-  createdAt: String
+  data: JSON
+  createdAt: DateTime
 }
 type ActionsList {
   actions: [Action!]

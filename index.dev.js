@@ -2,6 +2,7 @@ require('@babel/register')({
   ignore: [/\/(build|node_modules)\//],
   presets: ['@babel/env', 'react-app'],
   plugins: [
+    'macros',
     '@babel/plugin-syntax-dynamic-import',
     'dynamic-import-node-babel-7',
     '@babel/plugin-proposal-do-expressions',

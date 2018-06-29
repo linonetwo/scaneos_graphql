@@ -91,6 +91,7 @@ export const Account = {
       };
     });
   },
+  createdAt: ({ created }) => new Date(created),
 };
 export default {
   accounts(_: any, { page, size }: { page?: number, size?: number }) {

@@ -1,5 +1,8 @@
+import { mapValues } from 'lodash';
 import fetch from 'node-fetch';
 import camelize from 'camelize';
+import it from 'param.macro';
+
 import { postEOS } from '../../../API.config';
 
 export default {
@@ -20,7 +23,8 @@ export default {
     // from https://coinmarketcap.com/currencies/eos/ look at network
     return fetch('https://graphs2.coinmarketcap.com/currencies/eos/1527440357000/1530118757000/')
       .then(res => res.json())
-      .then(camelize);
+      .then(camelize)
+      .then(chartFields => mapValues(chartFields, it.map(([time, value]) => ({ time, value }))));
   },
   resourcePrice() {
     return Promise.all([
@@ -67,9 +71,11 @@ export default {
     }));
   },
   async resourcePriceChart() {
-    const ramPrice = await fetch('https://www.feexplorer.io/json/EOSramPrice.php?start=1529401320000&end=1530159002000')
+    const ramPriceRawValues = await fetch(
+      'https://www.feexplorer.io/json/EOSramPrice.php?start=1529401320000&end=1530159002000',
+    )
       .then(res => res.text())
       .then(text => JSON.parse(text.substring(1, text.length - 1)));
-    return { ramPrice };
+    return { ramPrice: ramPriceRawValues.map(([time, value]) => ({ time, value })) };
   },
 };

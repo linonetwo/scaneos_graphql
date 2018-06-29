@@ -1,10 +1,9 @@
 // @flow
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 
-export const formatActionData = ({ actionId, transactionId, data, ...rest }) => ({
+export const formatActionData = ({ actionId, transactionId, ...rest }) => ({
   actionID: actionId,
   transactionID: transactionId,
-  data: JSON.stringify(data, null, '  '),
   ...rest,
 });
 export function getActionByID(id: string) {
