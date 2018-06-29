@@ -27,7 +27,7 @@ const mixBPDataWithCMSData = (bpData, cmsData) => {
 };
 
 const formatAuctionData = ({ lastBidTime, highBid, ...rest }) => ({
-  lastBidTime: Number(lastBidTime) / 1000 / 1000,
+  lastBidTime: Number(lastBidTime) / 1000,
   highBid: highBid / 10000,
   ...rest,
   id: undefined,
