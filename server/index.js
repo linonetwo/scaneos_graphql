@@ -3,7 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { graphqlExpress } from 'apollo-server-express';
+import graphqlPlayground from 'graphql-playground-middleware-express';
 import { ApolloEngine } from 'apollo-engine';
 import { makeExecutableSchema } from 'graphql-tools';
 
@@ -42,7 +43,7 @@ app.use(
 // GraphiQL, a visual editor for queries
 app.use(
   '/graphiql',
-  graphiqlExpress({ endpointURL: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }),
+  graphqlPlayground({ endpoint: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }),
 );
 
 const engine = new ApolloEngine({

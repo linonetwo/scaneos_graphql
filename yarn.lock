@@ -3419,6 +3419,16 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "http://registry.npm.taobao.org/graceful-fs/download/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
+graphql-config@2.0.0:
+  version "2.0.0"
+  resolved "http://registry.npm.taobao.org/graphql-config/download/graphql-config-2.0.0.tgz#daf69091055c6f675d63893a2d14c48f3fec3327"
+  dependencies:
+    graphql-import "^0.4.0"
+    graphql-request "^1.4.0"
+    js-yaml "^3.10.0"
+    lodash "^4.17.4"
+    minimatch "^3.0.4"
+
 graphql-config@^2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/graphql-config/download/graphql-config-2.0.1.tgz#d34a9bdf1d7360af7b01db9b20260a342ddc7390"
@@ -3436,7 +3446,7 @@ graphql-extensions@^0.0.x, graphql-extensions@~0.0.9:
     core-js "^2.5.3"
     source-map-support "^0.5.1"
 
-graphql-import@^0.4.4:
+graphql-import@^0.4.0, graphql-import@^0.4.4:
   version "0.4.5"
   resolved "http://registry.npm.taobao.org/graphql-import/download/graphql-import-0.4.5.tgz#e2f18c28d335733f46df8e0733d8deb1c6e2a645"
   dependencies:
@@ -3448,7 +3458,19 @@ graphql-import@^0.6.0:
   dependencies:
     lodash "^4.17.4"
 
-graphql-request@^1.5.0:
+graphql-playground-html@1.6.0:
+  version "1.6.0"
+  resolved "http://registry.npm.taobao.org/graphql-playground-html/download/graphql-playground-html-1.6.0.tgz#6ec4d54325ab2e5352506fdb89eb37c3fc718bf8"
+  dependencies:
+    graphql-config "2.0.0"
+
+graphql-playground-middleware-express@^1.7.1:
+  version "1.7.1"
+  resolved "http://registry.npm.taobao.org/graphql-playground-middleware-express/download/graphql-playground-middleware-express-1.7.1.tgz#9bac69fd7691056334ddea2c56c687bddb22844a"
+  dependencies:
+    graphql-playground-html "1.6.0"
+
+graphql-request@^1.4.0, graphql-request@^1.5.0:
   version "1.6.0"
   resolved "http://registry.npm.taobao.org/graphql-request/download/graphql-request-1.6.0.tgz#afe87cf2a336acabb0cc2a875900202eda89f412"
   dependencies:
