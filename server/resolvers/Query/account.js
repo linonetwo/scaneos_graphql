@@ -32,21 +32,21 @@ const formatAuctionData = ({ lastBidTime, highBid, ...rest }) => ({
   ...rest,
   id: undefined,
 });
+export const formatProducerInfo = (producerInfo: Object) => ({
+    ...producerInfo,
+    latitude: producerInfo.latitude && Number(producerInfo.latitude),
+    longitude: producerInfo.longitude && Number(producerInfo.longitude),
+    image: producerInfo.image && `${CMS_BASE}${producerInfo.image.data.url}`,
+    logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
+    nodes: producerInfo.nodes && JSON.parse(camelize(producerInfo.nodes)),
+  });
 
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
   const { data: blockProducersList } = await getCMS(`tables/bp/rows?filters[account][eq]=${accountName}`);
   const producerInfo = find(blockProducersList, { account: accountName });
   if (objSize(producerInfo) > 0) {
-    const blockProducerInfo = {
-      ...producerInfo,
-      latitude: producerInfo.latitude && Number(producerInfo.latitude),
-      longitude: producerInfo.longitude && Number(producerInfo.longitude),
-      image: producerInfo.image && `${CMS_BASE}${producerInfo.image.data.url}`,
-      logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
-      nodes: producerInfo.nodes && JSON.parse(camelize(producerInfo.nodes)),
-    };
-    return blockProducerInfo;
+    return formatProducerInfo(producerInfo);
   }
   return null;
 }

@@ -8,6 +8,7 @@ import { Transaction } from './Query/transaction';
 import { Action } from './Query/action';
 import { Account } from './Query/account';
 import { GlobalStatus } from './Query/aggregation';
+import { News } from './Query/news';
 // import Mutation from './Mutation';
 
 export default {
@@ -21,5 +22,6 @@ export default {
   Action,
   Account,
   GlobalStatus,
+  News,
   // Mutation,
 };
