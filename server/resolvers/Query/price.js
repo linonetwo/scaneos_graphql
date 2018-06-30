@@ -72,7 +72,7 @@ export default {
   },
   async resourcePriceChart() {
     const ramPriceRawValues = await fetch(
-      'https://www.feexplorer.io/json/EOSramPrice.php?start=1529401320000&end=1530159002000',
+      `https://www.feexplorer.io/json/EOSramPrice.php?start=${Date.now() + -5 * 24 * 3600 * 1000}&end=${Date.now()}`,
     )
       .then(res => res.text())
       .then(text => JSON.parse(text.substring(1, text.length - 1)));
