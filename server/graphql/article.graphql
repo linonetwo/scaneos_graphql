@@ -1,12 +1,12 @@
 # import BPInfo from "./bp.graphql"
 # import PageInfo from "./pagination.graphql"
 
-type News {
+type Article {
   title: String!
   content: String!
   producerInfo: BPInfo
 }
-type NewsList {
-  news: [News!]!
+type ArticlesList {
+  articles: [Article!]!
   pageInfo: PageInfo
 }

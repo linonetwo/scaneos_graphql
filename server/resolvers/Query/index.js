@@ -5,7 +5,7 @@ import transaction from './transaction';
 import action from './action';
 import account from './account';
 import price from './price';
-import news from './news';
+import article from './article';
 
 export default {
   ...searches,
@@ -15,5 +15,5 @@ export default {
   ...action,
   ...account,
   ...price,
-  ...news,
+  ...article,
 };
