@@ -9,7 +9,7 @@
     "start": "concurrently \"nodemon --ignore ./server/generated/ -e graphql --exec 'yarn gql2flow'\" \"NODE_ENV=development nodemon --ignore ./server/generated/ -e js,graphql --delay 0.9 ./index.dev.js\"",
     "serve": "NODE_ENV=production node ./index.prod.js",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
-    "gql2flow": "yarn build-schema && yarn gql-gen && yarn gqlJson2flow",
+    "gql2flow": "yarn build-schema && yarn gql-gen && yarn gqlJson2flow && echo ✅",
     "build-schema": "mkdir -p ./server/generated &&  node ./scripts/buildSchema.js > ./server/generated/schema.graphql",
     "gql-gen": "apollo-codegen introspect-schema ./server/generated/schema.graphql --output ./server/generated/schema.json",
     "gqlJson2flow": "gql2ts ./server/generated/schema.json -e $PWD/scripts/@gql2ts-language-flow.js -o ./server/generated/types.flow.js --ignore-type-name-declaration && prettier-eslint \"./server/generated/*.js\" --write"

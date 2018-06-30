@@ -56,7 +56,7 @@ engine.listen(
   },
   () => {
     console.log(
-      'GraphQL Gateway running in http://localhost:3002/graphiql\nAnd you can try http://localhost:3002/graphiql to run queries!',
+      'GraphQL Gateway running in http://localhost:3002/graphiql\nAnd you can try http://localhost:3002/graphiql to run queries!\n💹',
     );
   },
 );
