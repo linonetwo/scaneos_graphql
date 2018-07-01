@@ -1,7 +1,6 @@
 // @flow
 import { find, size as objSize, flatten, fromPairs } from 'lodash';
 import camelize from 'camelize';
-import it from 'param.macro';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export async function getAccountByName(accountName: string) {
@@ -52,19 +51,20 @@ async function getBPDetailFromCMS(accountName: string) {
   return null;
 }
 
-const formatEOSUnit = it.replace(' EOS', '');
+const formatEOSUnit = (eosBalanceString?: string) => (eosBalanceString ? eosBalanceString.replace(' EOS', '') : 0);
+const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Number(eosNumber) / 10000 : 0);
 
 export const Account = {
   eosBalance: ({ coreLiquidBalance }) => formatEOSUnit(coreLiquidBalance),
-  eosStaked: ({ voterInfo }) => voterInfo.staked / 10000,
+  eosStaked: ({ voterInfo }) => formatEOSNumber(voterInfo?.staked),
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
-    weight: Number(netWeight) / 10000,
-    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth.netWeight),
+    weight: formatEOSNumber(netWeight),
+    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.netWeight),
     ...netLimit,
   }),
   cpu: ({ cpuWeight, cpuLimit, selfDelegatedBandwidth }) => ({
-    weight: Number(cpuWeight) / 10000,
-    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth.cpuWeight),
+    weight: formatEOSNumber(cpuWeight),
+    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.cpuWeight),
     ...cpuLimit,
   }),
   ram: ({ ramQuota, ramUsage }) => ({ max: ramQuota, used: ramUsage, available: ramQuota - ramUsage }),
