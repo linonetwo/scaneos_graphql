@@ -3,6 +3,7 @@
 # import ActionsList from "./blockchain.graphql"
 
 scalar DateTime
+scalar JSON
 
 type Permission {
   actor: String
@@ -12,34 +13,22 @@ type Accounts {
   permission: Permission
   weight: Int
 }
-type NetLimit {
-  used: Int
-  available: Int
-  max: Int
+type AuthKey {
+  key: String!
+  weight: Int!
 }
 type RequiredAuth {
   threshold: Int
-  keys: [String]
+  keys: [AuthKey]!
   accounts: [Accounts]!
-  waits: [String]
+  waits: [String]!
 }
 type Permissions {
   permName: String
   parent: String
   requiredAuth: RequiredAuth
 }
-type SelfDelegatedBandwidth {
-  from: String
-  to: String
-  netWeight: Int
-  cpuWeight: Int
-}
-type TotalResources {
-  owner: String
-  netWeight: Int
-  cpuWeight: Int
-  ramBytes: Int
-}
+
 type VoterInfo {
   owner: String
   proxy: String
@@ -50,27 +39,31 @@ type VoterInfo {
   isProxy: Int
   unstaking: Int
 }
+
+type ResourceStatus {
+  used: Float!
+  available: Float!
+  max: Float!
+  weight: Float
+  selfDelegatedWeight: Float
+}
+
 type Account {
   producerInfo: BPInfo
   actions(type: String, page: Int, size: Int): ActionsList!
 
-  tokenBalance: String
+  eosBalance: Float!
+  tokenBalance(token: String): JSON
+  net: ResourceStatus!
+  cpu: ResourceStatus!
+  ram: ResourceStatus!
   accountName: String
   headBlockNum: Int
   headBlockTime: DateTime
   privileged: Boolean
   lastCodeUpdate: DateTime
   createdAt: DateTime
-  coreLiquidBalance: String
-  ramQuota: Int
-  netWeight: Int
-  cpuWeight: Int
-  netLimit: NetLimit
-  cpuLimit: NetLimit
-  ramUsage: Int
   permissions: [Permissions]!
-  totalResources: TotalResources
-  selfDelegatedBandwidth: SelfDelegatedBandwidth
   refundRequest: String
   voterInfo: VoterInfo
 }

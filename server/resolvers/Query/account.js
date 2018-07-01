@@ -1,6 +1,7 @@
 // @flow
-import { find, size as objSize, flatten } from 'lodash';
+import { find, size as objSize, flatten, fromPairs } from 'lodash';
 import camelize from 'camelize';
+import it from 'param.macro';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export async function getAccountByName(accountName: string) {
@@ -33,13 +34,13 @@ const formatAuctionData = ({ lastBidTime, highBid, ...rest }) => ({
   id: undefined,
 });
 export const formatProducerInfo = (producerInfo: Object) => ({
-    ...producerInfo,
-    latitude: producerInfo.latitude && Number(producerInfo.latitude),
-    longitude: producerInfo.longitude && Number(producerInfo.longitude),
-    image: producerInfo.image && `${CMS_BASE}${producerInfo.image.data.url}`,
-    logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
-    nodes: producerInfo.nodes && JSON.parse(camelize(producerInfo.nodes)),
-  });
+  ...producerInfo,
+  latitude: producerInfo.latitude && Number(producerInfo.latitude),
+  longitude: producerInfo.longitude && Number(producerInfo.longitude),
+  image: producerInfo.image && `${CMS_BASE}${producerInfo.image.data.url}`,
+  logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
+  nodes: producerInfo.nodes && JSON.parse(camelize(producerInfo.nodes)),
+});
 
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
@@ -51,10 +52,26 @@ async function getBPDetailFromCMS(accountName: string) {
   return null;
 }
 
+const formatEOSUnit = it.replace(' EOS', '');
+
 export const Account = {
-  tokenBalance({ accountName }: { accountName: string }) {
-    return postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }).then(balanceData =>
-      balanceData.join(', '),
+  eosBalance: ({ coreLiquidBalance }) => formatEOSUnit(coreLiquidBalance),
+  net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
+    weight: Number(netWeight) / 10000,
+    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth.netWeight),
+    ...netLimit,
+  }),
+  cpu: ({ cpuWeight, cpuLimit, selfDelegatedBandwidth }) => ({
+    weight: Number(cpuWeight) / 10000,
+    selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth.cpuWeight),
+    ...cpuLimit,
+  }),
+  ram: ({ ramQuota, ramUsage }) => ({ max: ramQuota, used: ramUsage, available: ramQuota - ramUsage }),
+
+  tokenBalance({ accountName }: { accountName: string }, { token = 'eosio.token' }: { token?: string }) {
+    // 返回值类似 ["23.9000 EOS"]，我们把它变成 { EOS: 23.9 }
+    return postEOS('/chain/get_currency_balance', { account: accountName, code: token }).then(balanceData =>
+      fromPairs(balanceData.map(valueString => valueString.split(' ').reverse())),
     );
   },
   producerInfo({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
