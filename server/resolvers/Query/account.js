@@ -62,7 +62,7 @@ export const Account = {
     return Promise.all([
       getBPList().then(bpList => find(bpList, { owner: accountName })),
       getBPDetailFromCMS(accountName),
-    ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
+    ]).then(([bpData, cmsData]) => bpData && cmsData && mixBPDataWithCMSData(bpData, cmsData));
   },
   async actions(
     { accountName }: { accountName: string },
