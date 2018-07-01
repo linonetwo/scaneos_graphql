@@ -14,7 +14,7 @@ const config: GraphQLScalarTypeConfig<Date, string> = {
     const date = new Date(value);
     if (date == 'Invalid Date') {
       throw new TypeError(
-        `${'DateTime cannot be serialized from a non string, ' + 'non numeric or non Date type '}${JSON.stringify(
+        `${'DateTime cannot be serialized from a non string, non numeric or non Date type '}${JSON.stringify(
           value,
         )}`,
       );

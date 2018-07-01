@@ -121,7 +121,7 @@ export default {
     );
   },
   account(_: any, { name }: { name: string }) {
-    return postEOS('/chain/get_account', { account_name: name });
+    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
   },
   async producers(root: any, args: any, context: any, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
