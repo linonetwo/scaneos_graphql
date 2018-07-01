@@ -53,6 +53,7 @@ type Account {
   actions(type: String, page: Int, size: Int): ActionsList!
 
   eosBalance: Float!
+  eosStaked: Float!
   tokenBalance(token: String): JSON
   net: ResourceStatus!
   cpu: ResourceStatus!

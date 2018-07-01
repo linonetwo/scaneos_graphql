@@ -56,6 +56,7 @@ const formatEOSUnit = it.replace(' EOS', '');
 
 export const Account = {
   eosBalance: ({ coreLiquidBalance }) => formatEOSUnit(coreLiquidBalance),
+  eosStaked: ({ voterInfo }) => voterInfo.staked / 10000,
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
     weight: Number(netWeight) / 10000,
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth.netWeight),
