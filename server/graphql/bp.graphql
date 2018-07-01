@@ -1,15 +1,3 @@
-type Image {
-  name: String
-  title: String
-  type: String
-  width: Int
-  height: Int
-  size: Int
-  dateUploaded: String
-  url: String!
-  thumbnailUrl: String
-}
-
 type NodeLocation {
   id: String
   name: String
@@ -41,7 +29,7 @@ type BPInfo {
   key: String
   organization: String
   nodes: [Nodes]
-  logo: Image
+  logo: String
   locationZh: String
   organizationIntroduction: String
   organizationIntroductionZh: String
@@ -51,5 +39,5 @@ type BPInfo {
   latitude: Float
   longitude: Float
   location: String
-  image: Image
+  image: String
 }
