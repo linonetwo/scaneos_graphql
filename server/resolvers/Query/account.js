@@ -123,7 +123,12 @@ export default {
   account(_: any, { name }: { name: string }) {
     return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
   },
-  async producers(root: any, { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number }, context: any, { cacheControl }: Object) {
+  async producers(
+    root: any,
+    { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
+    context: any,
+    { cacheControl }: Object,
+  ) {
     cacheControl.setCacheHint({ maxAge: 60 });
 
     const bpListPromise = getBPList().then(bpList =>
@@ -137,7 +142,8 @@ export default {
         return { rank: index + 1, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
-    return take(drop(producerList, page * size), size);
+    const totalPages = Math.ceil(producerList / size);
+    return { producers: take(drop(producerList, page * size), size), pageInfo: { totalPages } };
   },
 
   nameAuctions(_: any, { page, size }: { page?: number, size?: number }) {

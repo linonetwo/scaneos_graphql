@@ -1,3 +1,5 @@
+# import PageInfo from "./pagination.graphql"
+
 type NodeLocation {
   id: String
   name: String
@@ -40,4 +42,8 @@ type BPInfo {
   longitude: Float
   location: String
   image: String
+}
+type BPList {
+  producers: [BPInfo!]
+  pageInfo: PageInfo
 }
