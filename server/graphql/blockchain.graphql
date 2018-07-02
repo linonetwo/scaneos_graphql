@@ -11,7 +11,8 @@ type Block {
   transactionMerkleRoot: String!
   producerAccountID: String!
   pending: Boolean!
-  transactions: [Transaction!]
+  transactions(page: Int, size: Int): TransactionsList!
+  transactionNum: Int!
 }
 type BlocksList {
   blocks: [Block!]

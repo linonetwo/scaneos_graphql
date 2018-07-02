@@ -1,4 +1,5 @@
 // @flow
+import { take, drop } from 'lodash';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export function getFirstBlockIdFromBlockListResponse(data: Object) {
@@ -33,11 +34,17 @@ export async function getBlockByBlockID(blockID: string) {
 export const Block = {
   transactions: {
     description: async () => '交易列表 | Transactions',
-    resolve: async ({ transactions: transactionIDs }) => {
+    resolve: async (
+      { transactions: transactionIDs },
+      { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
+    ) => {
       const { getTransactionByID } = await import('./transaction');
-      return transactionIDs.map(getTransactionByID);
+      const transactions = transactionIDs ? await transactionIDs.map(getTransactionByID) : [];
+      const totalPages = Math.ceil(transactions.length / size);
+      return { transactions: take(drop(transactions, page * size), size), pageInfo: { totalPages } };
     },
   },
+  transactionNum: ({ transactions: transactionIDs }) => (transactionIDs ? transactionIDs.length : 0),
 };
 export default {
   blocks(_: any, { page, size }: { page?: number, size?: number }) {
