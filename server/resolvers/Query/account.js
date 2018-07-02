@@ -89,9 +89,9 @@ export const Account = {
     const { formatActionData } = await import('./action');
     if (type) {
       return get(`/actions/${type}?account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-        ({ content, page: { totalPages } }) => ({
+        ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
           actions: content.map(formatActionData),
-          pageInfo: { totalPages },
+          pageInfo: { totalPages, totalElements, page: number, size: pageSize },
         }),
       );
     }
@@ -114,9 +114,9 @@ export const Account = {
 export default {
   accounts(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         accounts: content.map(data => ({ accountName: data.data.name, createdAt: data.createdAt })),
-        pageInfo: { totalPages },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
   },
@@ -148,9 +148,9 @@ export default {
 
   nameAuctions(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/accounts/biddingaccounts?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         nameAuctions: content.map(formatAuctionData),
-        pageInfo: { totalPages },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
   },
