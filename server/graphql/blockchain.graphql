@@ -19,7 +19,7 @@ type BlocksList {
 }
 
 type Transaction {
-  actions: [Action!]
+  actions(page: Int, size: Int): ActionsList!
   transactionID: String
   sequenceNum: Int
   blockID: String

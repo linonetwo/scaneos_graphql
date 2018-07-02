@@ -1,4 +1,5 @@
 // @flow
+import { take, drop } from 'lodash';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 import { getActionByID } from './action';
 
@@ -15,7 +16,11 @@ export function getTransactionByID(id: string) {
 export const Transaction = {
   actions: {
     description: async () => '消息列表 | Actions',
-    resolve: ({ actions: actionIDs }) => (actionIDs ? actionIDs.map(getActionByID) : []),
+    resolve: ({ actions: actionIDs }, { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number }) => {
+      const actions = actionIDs ? actionIDs.map(getActionByID) : [];
+      const totalPages = Math.ceil(actions / size);
+      return { producers: take(drop(actions, page * size), size), pageInfo: { totalPages } };
+    },
   },
   async block({ blockID }: { blockID: string }) {
     const { getBlockByBlockID } = await import('./block');
