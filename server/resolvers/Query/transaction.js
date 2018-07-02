@@ -34,9 +34,9 @@ export const Transaction = {
 export default {
   transactions(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/transactions?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         transactions: content.map(formatTransactionData),
-        pageInfo: { totalPages },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
   },

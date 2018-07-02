@@ -1,3 +1,6 @@
 type PageInfo {
   totalPages: Int!
+  totalElements: Int
+  page: Int
+  size: Int
 }
