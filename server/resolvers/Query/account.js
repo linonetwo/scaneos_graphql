@@ -142,7 +142,7 @@ export default {
         return { rank: index + 1, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
-    const totalPages = Math.ceil(producerList / size);
+    const totalPages = Math.ceil(producerList.length / size);
     return { producers: take(drop(producerList, page * size), size), pageInfo: { totalPages } };
   },
 

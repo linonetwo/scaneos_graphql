@@ -20,6 +20,7 @@ type BlocksList {
 
 type Transaction {
   actions(page: Int, size: Int): ActionsList!
+  actionNum: Int!
   transactionID: String
   sequenceNum: Int
   blockID: String
@@ -30,7 +31,6 @@ type Transaction {
   expiration: DateTime
   pending: Boolean
   createdAt: DateTime
-  type: String
   updatedAt: DateTime
 }
 type TransactionsList {

@@ -16,12 +16,16 @@ export function getTransactionByID(id: string) {
 export const Transaction = {
   actions: {
     description: async () => '消息列表 | Actions',
-    resolve: ({ actions: actionIDs }, { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number }) => {
-      const actions = actionIDs ? actionIDs.map(getActionByID) : [];
-      const totalPages = Math.ceil(actions / size);
-      return { producers: take(drop(actions, page * size), size), pageInfo: { totalPages } };
+    resolve: async (
+      { actions: actionIDs },
+      { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
+    ) => {
+      const actions = actionIDs ? await actionIDs.map(getActionByID) : [];
+      const totalPages = Math.ceil(actions.length / size);
+      return { actions: take(drop(actions, page * size), size), pageInfo: { totalPages } };
     },
   },
+  actionNum: ({ actions: actionIDs }) => (actionIDs ? actionIDs.length : 0),
   async block({ blockID }: { blockID: string }) {
     const { getBlockByBlockID } = await import('./block');
     return getBlockByBlockID(blockID);
