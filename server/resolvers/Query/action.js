@@ -19,9 +19,9 @@ export const Action = {
 export default {
   actions(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/actions?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         actions: content.map(formatActionData),
-        pageInfo: { totalPages },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
   },
