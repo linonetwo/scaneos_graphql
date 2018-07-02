@@ -49,9 +49,9 @@ export const Block = {
 export default {
   blocks(_: any, { page, size }: { page?: number, size?: number }) {
     return get(`/blocks?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-      ({ content, page: { totalPages } }) => ({
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         blocks: content.map(formatBlockData),
-        pageInfo: { totalPages },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
   },
