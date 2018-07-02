@@ -15,7 +15,7 @@ export function getTransactionByID(id: string) {
 export const Transaction = {
   actions: {
     description: async () => '消息列表 | Actions',
-    resolve: ({ actions: actionIDs }) => actionIDs.map(getActionByID),
+    resolve: ({ actions: actionIDs }) => (actionIDs ? actionIDs.map(getActionByID) : []),
   },
   async block({ blockID }: { blockID: string }) {
     const { getBlockByBlockID } = await import('./block');
