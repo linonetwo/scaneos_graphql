@@ -142,8 +142,9 @@ export default {
         return { rank: index + 1, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
-    const totalPages = Math.ceil(producerList.length / size);
-    return { producers: take(drop(producerList, page * size), size), pageInfo: { totalPages } };
+    const totalElements = producerList.length
+    const totalPages = Math.ceil(totalElements / size);
+    return { producers: take(drop(producerList, page * size), size), pageInfo: { totalElements, totalPages, page, size } };
   },
 
   nameAuctions(_: any, { page, size }: { page?: number, size?: number }) {
