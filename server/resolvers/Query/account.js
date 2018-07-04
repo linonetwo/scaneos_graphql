@@ -1,5 +1,5 @@
 // @flow
-import { find, size as objSize, flatten, fromPairs, take, drop } from 'lodash';
+import { find, size as objSize, flatten, fromPairs, take, drop, mapValues } from 'lodash';
 import camelize from 'camelize';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
@@ -51,8 +51,9 @@ async function getBPDetailFromCMS(accountName: string) {
   return null;
 }
 
-const formatEOSUnit = (eosBalanceString?: string) => (eosBalanceString ? eosBalanceString.replace(' EOS', '') : 0);
-const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Number(eosNumber) / 10000 : 0);
+const formatEOSUnit = (eosBalanceString?: string) =>
+  eosBalanceString ? Math.max(Number(eosBalanceString.replace(' EOS', '')), 0) : 0;
+const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Math.max(Number(eosNumber), 0) / 10000 : 0);
 
 export const Account = {
   eosBalance: ({ coreLiquidBalance }) => formatEOSUnit(coreLiquidBalance),
@@ -60,14 +61,18 @@ export const Account = {
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
     weight: formatEOSNumber(netWeight),
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.netWeight),
-    ...netLimit,
+    ...mapValues(netLimit, value => Math.max(value, 0)),
   }),
   cpu: ({ cpuWeight, cpuLimit, selfDelegatedBandwidth }) => ({
     weight: formatEOSNumber(cpuWeight),
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.cpuWeight),
-    ...cpuLimit,
+    ...mapValues(cpuLimit, value => Math.max(value, 0)),
   }),
-  ram: ({ ramQuota, ramUsage }) => ({ max: ramQuota, used: ramUsage, available: ramQuota - ramUsage }),
+  ram: ({ ramQuota, ramUsage }) => ({
+    max: Math.max(Number(ramQuota), 0),
+    used: Math.max(Number(ramUsage), 0),
+    available: Math.max(Number(ramQuota - ramUsage), 0),
+  }),
 
   tokenBalance({ accountName }: { accountName: string }, { token = 'eosio.token' }: { token?: string }) {
     // 返回值类似 ["23.9000 EOS"]，我们把它变成 { EOS: 23.9 }
@@ -142,9 +147,12 @@ export default {
         return { rank: index + 1, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
-    const totalElements = producerList.length
+    const totalElements = producerList.length;
     const totalPages = Math.ceil(totalElements / size);
-    return { producers: take(drop(producerList, page * size), size), pageInfo: { totalElements, totalPages, page, size } };
+    return {
+      producers: take(drop(producerList, page * size), size),
+      pageInfo: { totalElements, totalPages, page, size },
+    };
   },
 
   nameAuctions(_: any, { page, size }: { page?: number, size?: number }) {
