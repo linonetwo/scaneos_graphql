@@ -33,11 +33,11 @@ type VoterInfo {
   owner: String
   proxy: String
   producers: [String]!
-  staked: Int
+  staked: Float
   lastVoteWeight: String
   proxiedVoteWeight: String
   isProxy: Int
-  unstaking: Int
+  unstaking: Float
 }
 
 type ResourceStatus {
