@@ -30,7 +30,7 @@ type BPInfo {
   sloganZh: String
   key: String
   organization: String
-  nodes: [Nodes]
+  nodes: [Nodes]!
   logo: String
   locationZh: String
   organizationIntroduction: String

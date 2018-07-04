@@ -38,7 +38,7 @@ export const formatProducerInfo = (producerInfo: Object) => ({
   longitude: producerInfo.longitude && Number(producerInfo.longitude),
   image: producerInfo.image && `${CMS_BASE}${producerInfo.image.data.url}`,
   logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
-  nodes: producerInfo.nodes && JSON.parse(camelize(producerInfo.nodes)),
+  nodes: producerInfo.nodes ? JSON.parse(camelize(producerInfo.nodes)) : [],
 });
 
 async function getBPDetailFromCMS(accountName: string) {
