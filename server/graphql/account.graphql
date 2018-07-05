@@ -41,9 +41,9 @@ type VoterInfo {
 }
 
 type ResourceStatus {
-  used: Float!
-  available: Float!
-  max: Float!
+  used: Float
+  available: Float
+  max: Float
   weight: Float
   selfDelegatedWeight: Float
 }

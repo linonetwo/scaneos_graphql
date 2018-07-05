@@ -19,7 +19,7 @@ type Query {
   action(id: String): Action
 
   account(name: String!): Account
-  accounts(page: Int, size: Int): AccountsList!
+  accounts(sortBy: String, page: Int, size: Int): AccountsList!
   nameAuction(name: String!): NameAuction
   nameAuctions(page: Int, size: Int): NameAuctionsList!
   producers(page: Int, size: Int): BPList!

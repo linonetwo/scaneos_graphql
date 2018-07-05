@@ -56,7 +56,8 @@ const formatEOSUnit = (eosBalanceString?: string) =>
 const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Math.max(Number(eosNumber), 0) / 10000 : 0);
 
 export const Account = {
-  eosBalance: ({ coreLiquidBalance }) => formatEOSUnit(coreLiquidBalance),
+  eosBalance: ({ eosBalance, coreLiquidBalance }) =>
+    typeof eosBalance === 'number' ? eosBalance : formatEOSUnit(coreLiquidBalance),
   eosStaked: ({ voterInfo }) => formatEOSNumber(voterInfo?.staked),
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
     weight: formatEOSNumber(netWeight),
@@ -117,10 +118,18 @@ export const Account = {
   createdAt: ({ created }) => new Date(created),
 };
 export default {
-  accounts(_: any, { page, size }: { page?: number, size?: number }) {
-    return get(`/actions?type=newaccount&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+  accounts(
+    _: any,
+    { sortBy = 'eos', page, size }: { sortBy?: 'eos' | 'ram' | 'cpu' | 'net' | 'staked', page?: number, size?: number },
+  ) {
+    return get(`/accounts?sortby=${sortBy}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
       ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
-        accounts: content.map(data => ({ accountName: data.data.name, created: data.createdAt })),
+        accounts: content.map(({ name, stakedBalance, eosBalance, ...rest }) => ({
+          accountName: name,
+          eosStaked: Number(stakedBalance),
+          eosBalance: Number(eosBalance),
+          ...rest,
+        })),
         pageInfo: { totalPages, totalElements, page: number, size: pageSize },
       }),
     );
