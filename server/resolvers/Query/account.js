@@ -58,7 +58,8 @@ const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Math.max(N
 export const Account = {
   eosBalance: ({ eosBalance, coreLiquidBalance }) =>
     typeof eosBalance === 'number' ? eosBalance : formatEOSUnit(coreLiquidBalance),
-  eosStaked: ({ voterInfo }) => formatEOSNumber(voterInfo?.staked),
+  eosStaked: ({ eosStaked, voterInfo }) =>
+    typeof eosStaked === 'number' ? eosStaked : formatEOSNumber(voterInfo?.staked),
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
     weight: formatEOSNumber(netWeight),
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.netWeight),
@@ -130,7 +131,7 @@ export default {
           eosBalance: Number(eosBalance),
           ...rest,
         })),
-        pageInfo: { totalPages, totalElements, page: number, size: pageSize },
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize, sortBy },
       }),
     );
   },
