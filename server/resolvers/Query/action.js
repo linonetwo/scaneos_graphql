@@ -1,13 +1,14 @@
 // @flow
+import { size as objSize } from 'lodash';
 import utf8 from 'utf8';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export const formatActionData = ({ actionId, transactionId, data, ...rest }) => ({
-    actionID: actionId,
-    transactionID: transactionId,
-    data: JSON.parse(utf8.decode(JSON.stringify(data))),
-    ...rest,
-  });
+  actionID: actionId,
+  transactionID: transactionId,
+  data: objSize(data) > 0 ? JSON.parse(utf8.decode(JSON.stringify(data))) : {},
+  ...rest,
+});
 export function getActionByID(id: string) {
   return get(`/actions?id=${id}`).then(formatActionData);
 }
