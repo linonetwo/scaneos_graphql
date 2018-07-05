@@ -6,7 +6,23 @@ export async function searchKeyWord(param: { keyWord: string, type: string }) {
   if (type === 'account') {
     return get(`/search?type=${type}&name=${keyWord}`);
   }
-  return get(`/search?type=${type}&id=${keyWord}`);
+  return postEOS('/chain/get_block', { block_num_or_id: keyWord }).then(
+    ({ id, producer, confirmed, previous, transactionMroot, actionMroot, transactions, ...rest }) => ({
+      blockID: id,
+      producerAccountID: producer,
+      pending: confirmed !== 0,
+      prevBlockID: previous,
+      transactionMerkleRoot: transactionMroot,
+      actionMerkleRoot: actionMroot,
+      transactions: transactions.map(transaction => ({
+        ...transaction,
+        ...transaction.trx,
+        transactionID: transaction.trx.id,
+        ...transaction.trx.transaction,
+      })),
+      ...rest,
+    }),
+  );
 }
 
 export const SearchResult = {
@@ -29,13 +45,12 @@ export default {
       // 长度为 64 的可能是 blockId，或者 transactionId
       // 尝试把 blockID 转换成「区块高度 blockNum」
       const blockIDSearchResults = await searchKeyWord({ keyWord, type: 'block' });
-      const firstBlockInResult = getFirstBlockIdFromBlockListResponse(blockIDSearchResults);
       if (
-        firstBlockInResult &&
-        firstBlockInResult.blockId === keyWord &&
-        typeof firstBlockInResult.blockNum === 'number'
+        blockIDSearchResults &&
+        blockIDSearchResults.blockID === keyWord &&
+        typeof blockIDSearchResults.blockNum === 'number'
       ) {
-        return { __typename: 'Block', ...(await getBlockByBlockNum(firstBlockInResult.blockNum)) };
+        return { __typename: 'Block', ...blockIDSearchResults };
       }
       const { getTransactionByID } = await import('./transaction');
       return { __typename: 'Transaction', ...(await getTransactionByID(keyWord)) };

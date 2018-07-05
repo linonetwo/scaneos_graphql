@@ -21,27 +21,22 @@ export function getBlockByBlockNum(blockNum: number) {
 }
 export async function getBlockByBlockID(blockID: string) {
   const { searchKeyWord } = await import('./search');
-  return searchKeyWord({ keyWord: blockID, type: 'block' })
-    .then(getFirstBlockIdFromBlockListResponse)
-    .then(firstBlockInResult => {
-      if (firstBlockInResult) {
-        return get(`/blocks?block_num=${firstBlockInResult.blockNum}`).then(formatBlockData);
-      }
-      return Promise.reject(new Error(`${String(blockID)} is not a block Number nor a block ID.`));
-    });
+  return searchKeyWord({ keyWord: blockID, type: 'block' });
 }
 
 export const Block = {
   transactions: {
     description: async () => '交易列表 | Transactions',
     resolve: async (
-      { transactions: transactionIDs },
+      { transactions = [] },
       { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
     ) => {
-      const { getTransactionByID } = await import('./transaction');
-      const transactions = transactionIDs ? await transactionIDs.map(getTransactionByID) : [];
-      const totalPages = Math.ceil(transactions.length / size);
-      return { transactions: take(drop(transactions, page * size), size), pageInfo: { totalPages } };
+      const totalElements = transactions.length;
+      const totalPages = Math.ceil(totalElements / size);
+      return {
+        transactions: take(drop(transactions, page * size), size),
+        pageInfo: { totalPages, totalElements, page, size },
+      };
     },
   },
   transactionNum: ({ transactions: transactionIDs }) => (transactionIDs ? transactionIDs.length : 0),

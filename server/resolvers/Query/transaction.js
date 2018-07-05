@@ -17,15 +17,20 @@ export const Transaction = {
   actions: {
     description: async () => '消息列表 | Actions',
     resolve: async (
-      { actions: actionIDs },
+      { actions: actionsOrIDs },
       { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
     ) => {
-      const actions = actionIDs ? await actionIDs.map(getActionByID) : [];
+      let actions = [];
+      if (actionsOrIDs && actionsOrIDs.length > 0 && typeof actionsOrIDs[0] === 'object') {
+        actions = actionsOrIDs.map(({ account, ...rest }) => ({ handlerAccountName: account, ...rest }));
+      } else {
+        actions = actionsOrIDs ? await actionsOrIDs.map(getActionByID) : [];
+      }
       const totalPages = Math.ceil(actions.length / size);
       return { actions: take(drop(actions, page * size), size), pageInfo: { totalPages } };
     },
   },
-  actionNum: ({ actions: actionIDs }) => (actionIDs ? actionIDs.length : 0),
+  actionNum: ({ actions: actionsOrIDs }) => (actionsOrIDs ? actionsOrIDs.length : 0),
   async block({ blockID }: { blockID: string }) {
     const { getBlockByBlockID } = await import('./block');
     return getBlockByBlockID(blockID);
