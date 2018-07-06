@@ -141,7 +141,7 @@ export default {
   async producers(
     root: any,
     { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
-    context,
+    { dataSources },
     { cacheControl }: Object,
   ) {
     cacheControl.setCacheHint({ maxAge: 60 });
@@ -149,8 +149,7 @@ export default {
     const bpListPromise = getBPList().then(bpList =>
       bpList.sort((a, b) => Number(b.totalVotes) - Number(a.totalVotes)),
     );
-    console.log(context)
-    const cmsListPromise = context.dataSources.cms.getBPDescriptionList();
+    const cmsListPromise = dataSources.cms.getBPDescriptionList();
 
     const producerList = await Promise.all([bpListPromise, cmsListPromise]).then(([bpList, cmsList]) =>
       bpList.map((bpData, index) => {
