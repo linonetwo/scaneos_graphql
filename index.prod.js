@@ -9,7 +9,6 @@ require('@babel/register')({
         },
       },
     ],
-    'react-app',
   ],
   plugins: [
     'macros',
