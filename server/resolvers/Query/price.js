@@ -57,7 +57,7 @@ export default {
           const cpuAvailable = cpuMaxLimit / 1000; // microseconds to milliseconds
           return {
             netPrice: netStaked / netAvailable,
-            cpuPrice: cpuStaked / cpuAvailable,
+            cpuPrice: cpuStaked / cpuAvailable * 1000, // use second as unit
           };
         },
       ),
