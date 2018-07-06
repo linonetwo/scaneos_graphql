@@ -1,6 +1,15 @@
 require('@babel/register')({
   ignore: [/\/(build|node_modules)\//],
-  presets: ['@babel/env', 'react-app'],
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: 'current',
+        },
+      },
+    ],
+  ],
   plugins: [
     'macros',
     '@babel/plugin-syntax-dynamic-import',
@@ -8,6 +17,8 @@ require('@babel/register')({
     '@babel/plugin-proposal-do-expressions',
     '@babel/plugin-proposal-optional-chaining',
     'transform-decorators-legacy',
+    '@babel/plugin-syntax-flow',
+    '@babel/plugin-transform-flow-strip-types',
     [
       'flow-runtime',
       {

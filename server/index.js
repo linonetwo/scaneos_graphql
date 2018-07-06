@@ -3,50 +3,49 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
-import { graphqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server';
 import graphqlPlayground from 'graphql-playground-middleware-express';
 import { ApolloEngine } from 'apollo-engine';
 import { makeExecutableSchema } from 'graphql-tools';
+import { CMS_TOKEN } from '../API.config';
 
+import CMS from './dataSources/cms';
 import resolvers from './resolvers';
 // Import schema.graphql by relative path to where we run "yarn start"
 const typeDefs = importSchema('./server/graphql/schema.graphql');
-// Put together a schema
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
 
 // Initialize the app
 const app = express();
-
-// The GraphQL data endpoint
 const whitelist = ['http://localhost:3000'];
-const corsOptions = {
-  origin(origin, callback) {
-    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-    callback(null, originIsWhitelisted);
-  },
-  credentials: true,
-};
 app.use(
-  '/graphql',
-  cors(corsOptions),
-  bodyParser.json(),
-  graphqlExpress({
-    schema,
-    context: {},
-    tracing: true,
-    cacheControl: {
-      defaultMaxAge: 5,
+  cors({
+    origin(origin, callback) {
+      const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+      callback(null, originIsWhitelisted);
     },
+    credentials: true,
   }),
 );
-// GraphiQL, a visual editor for queries
-app.use(
-  '/graphiql',
-  graphqlPlayground({ endpoint: process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql' }),
-);
+app.use(bodyParser.json());
+
+// The GraphQL data endpoint
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: { CMS_TOKEN },
+  tracing: true,
+  dataSources: () => ({
+    cms: new CMS(),
+  }),
+  cacheControl: {
+    defaultMaxAge: 5,
+    stripFormattedExtensions: false,
+    calculateCacheControlHeaders: false,
+  },
+  engine: false,
+});
+server.applyMiddleware({ app });
 
 const engine = new ApolloEngine({
   apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
@@ -55,6 +54,7 @@ engine.listen(
   {
     port: 3002,
     expressApp: app,
+    graphqlPaths: [process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql'],
   },
   () => {
     console.log(
