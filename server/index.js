@@ -37,7 +37,9 @@ app.use(
     schema,
     context: {},
     tracing: true,
-    cacheControl: true,
+    cacheControl: {
+      defaultMaxAge: 5,
+    },
   }),
 );
 // GraphiQL, a visual editor for queries
