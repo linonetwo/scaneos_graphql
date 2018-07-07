@@ -3,10 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
-import { ApolloServer } from 'apollo-server';
-import graphqlPlayground from 'graphql-playground-middleware-express';
+import { ApolloServer } from 'apollo-server-express';
 import { ApolloEngine } from 'apollo-engine';
-import { makeExecutableSchema } from 'graphql-tools';
 import { CMS_TOKEN } from '../API.config';
 
 import CMS from './dataSources/cms';
@@ -35,6 +33,7 @@ const server = new ApolloServer({
   resolvers,
   context: { CMS_TOKEN },
   tracing: true,
+  introspection: true,
   dataSources: () => ({
     cms: new CMS(),
   }),
@@ -45,7 +44,7 @@ const server = new ApolloServer({
   },
   engine: false,
 });
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, gui: true });
 
 const engine = new ApolloEngine({
   apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
@@ -58,7 +57,7 @@ engine.listen(
   },
   () => {
     console.log(
-      'GraphQL Gateway running in http://localhost:3002/graphql\nAnd you can try http://localhost:3002/graphiql to run queries!\n💹',
+      'GraphQL Gateway running in http://localhost:3002/graphql 💹',
     );
   },
 );
