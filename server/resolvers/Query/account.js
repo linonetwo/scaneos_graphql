@@ -11,6 +11,9 @@ export async function getAccountByName(accountName: string) {
 
   if (!data) throw new Error('No data.');
 
+  // 查无此人就返回 null
+  if (data.code === 500) return null;
+
   return { ...data, tokenBalance: balanceData.join(', ') };
 }
 const getBPList = () =>

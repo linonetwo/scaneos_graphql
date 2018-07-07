@@ -33,7 +33,8 @@ export const SearchResult = {
 
 export default {
   async search(_: any, { keyWord }: { keyWord: string }) {
-    const { getBlockByBlockNum, getFirstBlockIdFromBlockListResponse } = await import('./block');
+    if (!keyWord) return null;
+    const { getBlockByBlockNum } = await import('./block');
 
     if (Number.isFinite(Number(keyWord))) {
       return { __typename: 'Block', ...(await getBlockByBlockNum(Number(keyWord))) };
@@ -64,7 +65,8 @@ export default {
         return { __typename: 'Account', ...(await getAccountByName(data.accountNames[0])) };
       }
     }
-    // 其他目前默认是账户名
-    return { __typename: 'Account', ...(await getAccountByName(keyWord)) };
+    // 其他目前默认是账户名，还是没有就返回 null
+    const accountData = await getAccountByName(keyWord);
+    return accountData && { __typename: 'Account', ...accountData };
   },
 };

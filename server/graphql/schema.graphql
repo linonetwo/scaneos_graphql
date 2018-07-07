@@ -9,7 +9,7 @@
 union SearchResult = Block | Transaction | Account
 
 type Query {
-  search(keyWord: String!): SearchResult!
+  search(keyWord: String!): SearchResult
   status: GlobalStatus!
 
   blocks(page: Int, size: Int): BlocksList!
