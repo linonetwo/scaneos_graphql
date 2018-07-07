@@ -1,0 +1,11 @@
+# import PageInfo from "./pagination.graphql"
+
+type Token {
+  issuer: String
+  maximumSupply: String
+  createdAt: String
+}
+type TokensList {
+  tokens: [Token!]!
+  pageInfo: PageInfo
+}

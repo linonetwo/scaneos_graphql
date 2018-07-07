@@ -4,6 +4,7 @@
 # import EOSPrice, EOSPriceChart, ResourcePrice, ResourcePriceChart from "./price.graphql"
 # import GlobalStatus from "./aggregation.graphql"
 # import ArticlesList from "./article.graphql"
+# import TokensList from "./token.graphql"
 
 union SearchResult = Block | Transaction | Account
 
@@ -17,6 +18,7 @@ type Query {
   transaction(id: String): Transaction
   actions(page: Int, size: Int): ActionsList!
   action(id: String): Action
+  tokens(page: Int, size: Int): TokensList!
 
   account(name: String!): Account
   accounts(sortBy: String, page: Int, size: Int): AccountsList!
