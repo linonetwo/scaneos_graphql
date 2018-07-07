@@ -3,11 +3,14 @@ import { take, drop } from 'lodash';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 import { getActionByID } from './action';
 
-const formatTransactionData = ({ blockId, transactionId, ...rest }) => ({
-  blockID: blockId,
-  transactionID: transactionId,
-  ...rest,
-});
+const formatTransactionData = ({ blockId, transactionId, ...rest }) => {
+  if (!transactionId) return null;
+  return {
+    blockID: blockId,
+    transactionID: transactionId,
+    ...rest,
+  };
+};
 
 export function getTransactionByID(id: string) {
   return get(`/transactions?transaction_id=${id}`).then(formatTransactionData);

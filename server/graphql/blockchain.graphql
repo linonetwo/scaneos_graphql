@@ -5,12 +5,12 @@ scalar DateTime
 
 type Block {
   blockNum: Int!
-  blockID: String!
+  blockID: String
   prevBlockID: String
   timestamp: DateTime!
   transactionMerkleRoot: String!
   producerAccountID: String!
-  pending: Boolean!
+  pending: Boolean
   transactions(page: Int, size: Int): TransactionsList!
   transactionNum: Int!
 }
