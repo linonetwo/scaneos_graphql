@@ -10,3 +10,15 @@ type ArticlesList {
   articles: [Article!]!
   pageInfo: PageInfo
 }
+
+type Wiki {
+  field: String!
+  title: String
+  titleZh: String
+  content: String
+  contentZh: String
+}
+type WikisList {
+  wikis: [Wiki!]!
+  pageInfo: PageInfo
+}

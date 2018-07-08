@@ -3,7 +3,7 @@
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 # import EOSPrice, EOSPriceChart, ResourcePrice, ResourcePriceChart from "./price.graphql"
 # import GlobalStatus from "./aggregation.graphql"
-# import ArticlesList from "./article.graphql"
+# import ArticlesList, Wiki, WikisList from "./article.graphql"
 # import TokensList from "./token.graphql"
 
 union SearchResult = Block | Transaction | Account
@@ -32,4 +32,6 @@ type Query {
   resourcePriceChart: ResourcePriceChart!
 
   articles(page: Int, size: Int): ArticlesList!
+  wiki(field: String!): Wiki
+  wikis(keyWord: String, page: Int, size: Int): WikisList!
 }
