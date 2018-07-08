@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloEngine } from 'apollo-engine';
-import { CMS_TOKEN } from '../API.config';
+import { CMS_TOKEN, GRAPHQL_API } from '../API.config';
 
 import CMS from './dataSources/cms';
 import resolvers from './resolvers';
@@ -56,8 +56,6 @@ engine.listen(
     graphqlPaths: [process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql'],
   },
   () => {
-    console.log(
-      'GraphQL Gateway running in http://localhost:3002/graphql 💹',
-    );
+    console.log(`🚀 Server ready at ${GRAPHQL_API} 💹`);
   },
 );
