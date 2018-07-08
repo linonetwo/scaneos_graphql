@@ -21,7 +21,7 @@ export default {
   },
   priceChart() {
     // from https://coinmarketcap.com/currencies/eos/ look at network
-    return fetch('https://graphs2.coinmarketcap.com/currencies/eos/1527440357000/1530118757000/')
+    return fetch(`https://graphs2.coinmarketcap.com/currencies/eos/${Date.now() + -5 * 24 * 3600 * 1000}/${Date.now()}/`)
       .then(res => res.json())
       .then(camelize)
       .then(chartFields => mapValues(chartFields, it.map(([time, value]) => ({ time, value }))));
