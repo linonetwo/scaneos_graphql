@@ -72,14 +72,16 @@ export const Account = {
   },
   eosStaked: ({ eosStaked, voterInfo }) =>
     typeof eosStaked === 'number' ? eosStaked : formatEOSNumber(voterInfo?.staked),
-  net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
+  net: ({ netWeight, netLimit, selfDelegatedBandwidth, refundRequest }) => ({
     weight: formatEOSNumber(netWeight),
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.netWeight),
+    refund: formatEOSUnit(refundRequest?.netAmount),
     ...mapValues(netLimit, value => Math.max(value, 0)),
   }),
-  cpu: ({ cpuWeight, cpuLimit, selfDelegatedBandwidth }) => ({
+  cpu: ({ cpuWeight, cpuLimit, selfDelegatedBandwidth, refundRequest }) => ({
     weight: formatEOSNumber(cpuWeight),
     selfDelegatedWeight: formatEOSUnit(selfDelegatedBandwidth?.cpuWeight),
+    refund: formatEOSUnit(refundRequest?.cpuAmount),
     ...mapValues(cpuLimit, value => Math.max(value, 0)),
   }),
   ram: ({ ramQuota, ramUsage }) => ({

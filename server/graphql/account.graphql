@@ -46,6 +46,7 @@ type ResourceStatus {
   max: Float
   weight: Float
   selfDelegatedWeight: Float
+  refund: Float
 }
 
 type Account {
