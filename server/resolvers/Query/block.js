@@ -39,7 +39,7 @@ export const Block = {
       };
     },
   },
-  transactionNum: ({ transactions: transactionIDs }) => (transactionIDs ? transactionIDs.length : 0),
+  transactionNum: ({ transactions: transactionIDs = [] }) => transactionIDs.length,
 };
 export default {
   blocks(_: any, { page, size }: { page?: number, size?: number }) {

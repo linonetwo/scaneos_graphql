@@ -59,8 +59,17 @@ const formatEOSUnit = (eosBalanceString?: string) =>
 const formatEOSNumber = (eosNumber?: number | string) => (eosNumber ? Math.max(Number(eosNumber), 0) / 10000 : 0);
 
 export const Account = {
-  eosBalance: ({ eosBalance, coreLiquidBalance }) =>
-    typeof eosBalance === 'number' ? eosBalance : formatEOSUnit(coreLiquidBalance),
+  eosBalance: ({ accountName, eosBalance, coreLiquidBalance }) => {
+    if (typeof eosBalance === 'number') return eosBalance;
+    if (typeof coreLiquidBalance === 'string') return formatEOSUnit(coreLiquidBalance);
+    return postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }).then(balanceData => {
+      const eosBalanceData = balanceData.filter(str => str.endsWith(' EOS'));
+      if (eosBalanceData.length > 0) {
+        return formatEOSUnit(eosBalanceData[0]);
+      }
+      return null;
+    });
+  },
   eosStaked: ({ eosStaked, voterInfo }) =>
     typeof eosStaked === 'number' ? eosStaked : formatEOSNumber(voterInfo?.staked),
   net: ({ netWeight, netLimit, selfDelegatedBandwidth }) => ({
@@ -139,7 +148,7 @@ export default {
     );
   },
   account(_: any, { name }: { name: string }) {
-    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
+    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => error ? null : rest);
   },
   async producers(
     root: any,
