@@ -67,7 +67,7 @@ export const Account = {
       if (eosBalanceData.length > 0) {
         return formatEOSUnit(eosBalanceData[0]);
       }
-      return null;
+      return 0;
     });
   },
   eosStaked: ({ eosStaked, voterInfo }) =>
