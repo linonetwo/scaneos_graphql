@@ -1,8 +1,9 @@
 // @flow
-import { size as objSize } from 'lodash';
+import { size as objSize, truncate } from 'lodash';
+import stripTags from 'striptags';
 import { getCMS, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
-export function formatWiki(wiki) {
+export function formatDictionaryEntry(wiki) {
   return {
     field: wiki.field,
     title: wiki.en,
@@ -18,6 +19,16 @@ export const Article = {
       const { formatProducerInfo } = await import('./account');
       return formatProducerInfo(data);
     }
+  },
+};
+export const DictionaryEntry = {
+  brief({ content }) {
+    if (!content) return null;
+    return truncate(stripTags(content), { length: 100, separator: '...' });
+  },
+  briefZh({ contentZh }) {
+    if (!contentZh) return null;
+    return truncate(stripTags(contentZh), { length: 100, separator: '...' });
   },
 };
 export default {
@@ -39,13 +50,13 @@ export default {
       pageInfo: { totalPages: Math.ceil(Published / limit) },
     };
   },
-  async wiki(_: any, { field }: { field: string }) {
+  async dictionaryEntry(_: any, { field }: { field: string }) {
     const {
-      data: [wiki],
+      data: [dictionaryEntry],
     } = await getCMS(`tables/translation/rows?filters[field][eq]=${field}`);
-    return formatWiki(wiki);
+    return formatDictionaryEntry(dictionaryEntry);
   },
-  async wikis(_: any, { keyWord, page, size }: { keyWord?: string, page?: number, size?: number }) {
+  async dictionaryEntries(_: any, { keyWord, page, size }: { keyWord?: string, page?: number, size?: number }) {
     let offset = 0;
     let limit = PAGE_SIZE_DEFAULT;
     if (typeof size === 'number') {
@@ -63,7 +74,7 @@ export default {
     } = await getCMS(`tables/translation/rows?columns=field,zh,en&offset=${offset}&limit=${limit}${searchQuery}`);
 
     return {
-      wikis: data.map(formatWiki),
+      dictionaryEntries: data.map(formatDictionaryEntry),
       pageInfo: { totalPages: Math.ceil(Published / limit), totalElements: Published, page, size },
     };
   },

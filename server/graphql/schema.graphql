@@ -3,7 +3,7 @@
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 # import EOSPrice, EOSPriceChart, ResourcePrice, ResourcePriceChart from "./price.graphql"
 # import GlobalStatus from "./aggregation.graphql"
-# import ArticlesList, Wiki, WikisList from "./article.graphql"
+# import ArticlesList, DictionaryEntry, DictionaryEntriesList from "./article.graphql"
 # import TokensList from "./token.graphql"
 
 union SearchResult = Block | Transaction | Account
@@ -33,6 +33,12 @@ type Query {
   resourcePriceChart: ResourcePriceChart!
 
   articles(page: Int, size: Int): ArticlesList!
-  wiki(field: String!): Wiki
-  wikis(keyWord: String, page: Int, size: Int): WikisList!
+  """
+  根据 EOS 数据字段获取百科条目 | get dictionary entry by EOS data field
+  """
+  dictionaryEntry(field: String!): DictionaryEntry
+  """
+  获取百科条目列表，可以用关键字搜索 | get dictionary entries list, can search by keyWord
+  """
+  dictionaryEntries(keyWord: String, page: Int, size: Int): DictionaryEntriesList!
 }

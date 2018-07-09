@@ -5129,6 +5129,10 @@ strip-json-comments@^2.0.1, strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/strip-json-comments/download/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
+striptags@^3.1.1:
+  version "3.1.1"
+  resolved "http://registry.npm.taobao.org/striptags/download/striptags-3.1.1.tgz#c8c3e7fdd6fb4bb3a32a3b752e5b5e3e38093ebd"
+
 subscriptions-transport-ws@^0.9.11:
   version "0.9.12"
   resolved "http://registry.npm.taobao.org/subscriptions-transport-ws/download/subscriptions-transport-ws-0.9.12.tgz#0deb945134890d8694a93a090bacc6459c4478cc"

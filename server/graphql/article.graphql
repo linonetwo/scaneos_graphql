@@ -11,14 +11,37 @@ type ArticlesList {
   pageInfo: PageInfo
 }
 
-type Wiki {
+type DictionaryEntry {
+  """
+  EOS数据字段 | EOS data field
+  """
   field: String!
+  """
+  英文涵义 | EnglishMeaning
+  """
   title: String
+  """
+  中文翻译 | ChineseTranslation
+  """
   titleZh: String
+  """
+  英文释义 | EnglishExplanation
+  """
   content: String
+  """
+  中文释义 | ChineseExplanation
+  """
   contentZh: String
+  """
+  英文释义的前100字 | First 100 character of EnglishExplanation
+  """
+  brief: String
+  """
+  中文释义的前100字 | First 100 character of ChineseExplanation
+  """
+  briefZh: String
 }
-type WikisList {
-  wikis: [Wiki!]!
+type DictionaryEntriesList {
+  dictionaryEntries: [DictionaryEntry!]!
   pageInfo: PageInfo
 }
