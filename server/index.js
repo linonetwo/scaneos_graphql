@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloEngine } from 'apollo-engine';
+import chalk from 'chalk';
 import { CMS_TOKEN, GRAPHQL_API } from '../API.config';
 
 import CMS from './dataSources/cms';
@@ -56,6 +57,6 @@ engine.listen(
     graphqlPaths: [process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql'],
   },
   () => {
-    console.log(`🚀 Server ready at ${GRAPHQL_API} 💹`);
+    console.log(chalk.blueBright.bgWhite(`🚀 Server ready at ${GRAPHQL_API} 💹`));
   },
 );
