@@ -3,13 +3,14 @@ import { size as objSize, truncate } from 'lodash';
 import stripTags from 'striptags';
 import { getCMS, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
-export function formatDictionaryEntry(wiki) {
+export function formatDictionaryEntry(dictionaryEntry) {
+  if (!dictionaryEntry) return null;
   return {
-    field: wiki.field,
-    title: wiki.en,
-    titleZh: wiki.zh,
-    content: wiki.enMeaning,
-    contentZh: wiki.zhMeaning,
+    field: dictionaryEntry.field,
+    title: dictionaryEntry.en,
+    titleZh: dictionaryEntry.zh,
+    content: dictionaryEntry.enMeaning,
+    contentZh: dictionaryEntry.zhMeaning,
   };
 }
 export const Article = {
