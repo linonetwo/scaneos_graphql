@@ -84,3 +84,17 @@ type NameAuctionsList {
   nameAuctions: [NameAuction!]
   pageInfo: PageInfo
 }
+
+type AccoundTrend {
+  eosTopAccounts: [String!]
+  ramTopAccounts: [String!]
+  cpuTopAccounts: [String!]
+  netTopAccounts: [String!]
+  stakedTopAccounts: [String!]
+  eosPosition: [Float!]
+  ramPosition: [Float!]
+  cpuPosition: [Float!]
+  netPosition: [Float!]
+  stakedPosition: [Float!]
+  timestamp: DateTime!
+}

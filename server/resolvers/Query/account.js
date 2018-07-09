@@ -150,7 +150,7 @@ export default {
     );
   },
   account(_: any, { name }: { name: string }) {
-    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => error ? null : rest);
+    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
   },
   async producers(
     root: any,
@@ -210,5 +210,9 @@ export default {
           };
         }),
       );
+  },
+  async accountTrend(_: any, { fields = 'eos', range = 1 }: { fields: string, range?: number }) {
+    const data = await get(`/accounts/trend?view=${fields}&range=${range}`);
+    return data;
   },
 };
