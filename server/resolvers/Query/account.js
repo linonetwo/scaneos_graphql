@@ -211,7 +211,7 @@ export default {
         }),
       );
   },
-  async accountTrend(_: any, { fields = 'eos', range = 1 }: { fields: string, range?: number }) {
+  async accountTrend(_: any, { fields = 'eos', range = 1 }: { fields?: string, range?: number }) {
     const data = await get(`/accounts/trend?view=${fields}&range=${range}`);
     return data;
   },
