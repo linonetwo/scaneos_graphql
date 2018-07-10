@@ -25,7 +25,8 @@ type Query {
   accountTrend(fields: String, range: Int): [AccountTrend!]!
   nameAuction(name: String!): NameAuction
   nameAuctions(page: Int, size: Int): NameAuctionsList!
-  producers(page: Int, size: Int): BPList!
+  """获取超级节点列表，可以用逗号分隔的洲名来过滤 | get block producer list, filter by comma saparated continent name"""
+  producers(page: Int, size: Int, filterBy: JSON): BPList!
 
   price: EOSPrice!
   priceChart: EOSPriceChart!

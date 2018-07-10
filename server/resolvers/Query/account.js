@@ -46,6 +46,61 @@ export const formatProducerInfo = (producerInfo: Object) => ({
   logo: producerInfo.logo && `${CMS_BASE}${producerInfo.logo.data.url}`,
   nodes: producerInfo.nodes ? JSON.parse(camelize(producerInfo.nodes)) : [],
 });
+function locationBelongsToArea(location: string, area: string) {
+  if (area === 'Asia') {
+    if (location.indexOf('Asia') !== -1) return true;
+    if (location.indexOf('China') !== -1) return true;
+    if (location.indexOf('Hong Kong') !== -1) return true;
+    if (location.indexOf('Beijing') !== -1) return true;
+    if (location.indexOf('Shanghai') !== -1) return true;
+    if (location.indexOf('Korea') !== -1) return true;
+    if (location.indexOf('Singapore') !== -1) return true;
+    if (location.indexOf('Japan') !== -1) return true;
+    if (location.indexOf('Thailand') !== -1) return true;
+    if (location.indexOf('India') !== -1) return true;
+    if (location.indexOf('Bangkok') !== -1) return true;
+  }
+  if (area === 'America') {
+    if (location.indexOf('America') !== -1) return true;
+    if (location.indexOf('USA') !== -1) return true;
+    if (location.indexOf('Argentina') !== -1) return true;
+    if (location.indexOf('Canada') !== -1) return true;
+    if (location.indexOf('Virgin') !== -1) return true;
+    if (location.indexOf('BVI') !== -1) return true;
+    if (location.indexOf('Wyoming') !== -1) return true;
+    if (location.indexOf('California') !== -1) return true;
+    if (location.indexOf('Detroit') !== -1) return true;
+    if (location.indexOf('Dominican') !== -1) return true;
+    if (location.indexOf('Seattle') !== -1) return true;
+    if (location.indexOf('Anguilla') !== -1) return true;
+    if (location.indexOf('Mexico') !== -1) return true;
+    if (location.indexOf('Brazil') !== -1) return true;
+    if (location.indexOf('Puerto') !== -1) return true;
+  }
+  if (area === 'Europe') {
+    if (location.indexOf('Europe') !== -1) return true;
+    if (location.indexOf('England') !== -1) return true;
+    if (location.indexOf('Netherlands') !== -1) return true;
+    if (location.indexOf('Poland') !== -1) return true;
+    if (location.indexOf('Amsterdam') !== -1) return true;
+    if (location.indexOf('EU') !== -1) return true;
+    if (location.indexOf('Ukraine') !== -1) return true;
+    if (location.indexOf('Sweden') !== -1) return true;
+    if (location.indexOf('Iceland') !== -1) return true;
+    if (location.indexOf('Ireland') !== -1) return true;
+    if (location.indexOf('Norway') !== -1) return true;
+  }
+  if (area === 'Oceania') {
+    if (location.indexOf('Oceania') !== -1) return true;
+    if (location.indexOf('Australia') !== -1) return true;
+    if (location.indexOf('Zealand') !== -1) return true;
+  }
+  if (area === 'Africa') {
+    if (location.indexOf('Africa') !== -1) return true;
+    if (location.indexOf('Kenya') !== -1) return true;
+  }
+  return false;
+}
 
 async function getBPDetailFromCMS(accountName: string) {
   // 看看它是不是个 bp
@@ -164,7 +219,11 @@ export default {
   },
   async producers(
     root: any,
-    { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number },
+    {
+      page = 0,
+      size = PAGE_SIZE_DEFAULT,
+      filterBy,
+    }: { page?: number, size?: number, filterBy?: { location?: string[] } },
     { dataSources },
     { cacheControl }: Object,
   ) {
@@ -181,11 +240,22 @@ export default {
         return { rank: index + 1, ...mixBPDataWithCMSData(bpData, cmsData) };
       }),
     );
-    const totalElements = producerList.length;
+    // filter
+    let filteredProducerList = producerList;
+    if (filterBy?.location?.length > 0) {
+      const { location: locationFilter } = filterBy;
+      filteredProducerList = producerList.filter(
+        ({ location }) =>
+          (location && locationFilter.filter(name => String(location).indexOf(name) !== -1).length > 0) ||
+          locationFilter.some(name => locationBelongsToArea(String(location), name)),
+      );
+    }
+    // pagination
+    const totalElements = filteredProducerList.length;
     const totalPages = Math.ceil(totalElements / size);
     return {
-      producers: take(drop(producerList, page * size), size),
-      pageInfo: { totalElements, totalPages, page, size },
+      producers: take(drop(filteredProducerList, page * size), size),
+      pageInfo: { totalElements, totalPages, page, size, filterBy },
     };
   },
 
