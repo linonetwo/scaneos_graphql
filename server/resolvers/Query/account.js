@@ -1,11 +1,14 @@
 // @flow
-import { find, size as objSize, flatten, fromPairs, take, drop, mapValues } from 'lodash';
+import { find, size as objSize, flatten, fromPairs, take, drop, mapValues, last } from 'lodash';
 import camelize from 'camelize';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
+function getAccountDetailFromEOS(name: string) {
+  return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
+}
 export async function getAccountByName(accountName: string) {
   const [data, balanceData] = await Promise.all([
-    postEOS('/chain/get_account', { account_name: accountName }),
+    getAccountDetailFromEOS(accountName),
     postEOS('/chain/get_currency_balance', { account: accountName, code: 'eosio.token' }),
   ]);
 
@@ -132,6 +135,13 @@ export const Account = {
   },
   createdAt: ({ created }) => new Date(created),
 };
+
+export const AccountTrend = {
+  async ramTopAccountsDetail({ ramTopAccounts }: { ramTopAccounts?: string[] }) {
+    if (!ramTopAccounts) return null;
+    return ramTopAccounts.map(name => getAccountDetailFromEOS(name));
+  },
+};
 export default {
   accounts(
     _: any,
@@ -150,7 +160,7 @@ export default {
     );
   },
   account(_: any, { name }: { name: string }) {
-    return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
+    return getAccountDetailFromEOS(name);
   },
   async producers(
     root: any,
@@ -211,8 +221,8 @@ export default {
         }),
       );
   },
-  async accountTrend(_: any, { fields = 'eos', range = 1 }: { fields?: string, range?: number }) {
-    const data = await get(`/accounts/trend?view=${fields}&range=${range}`);
-    return data;
+  async accountTrend(_: any, { fields = 'eos', range = 0 }: { fields?: string, range?: number }) {
+    const data = await get(`/accounts/trend?view=${fields}&range=${range || 1}`);
+    return range > 0 ? data : [last(data)];
   },
 };

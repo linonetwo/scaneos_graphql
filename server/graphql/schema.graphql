@@ -1,4 +1,4 @@
-# import Account, AccountsList, NameAuction, NameAuctionsList, AccoundTrend from "./account.graphql"
+# import Account, AccountsList, NameAuction, NameAuctionsList, AccountTrend from "./account.graphql"
 # import BPList from "./bp.graphql"
 # import SearchResult, Block, BlocksList, Transaction, TransactionsList, Action, ActionsList from "./blockchain.graphql"
 # import EOSPrice, EOSPriceChart, ResourcePrice, ResourcePriceChart from "./price.graphql"
@@ -22,7 +22,7 @@ type Query {
 
   account(name: String!): Account
   accounts(sortBy: String, page: Int, size: Int): AccountsList!
-  accountTrend(fields: String, range: Int): [AccoundTrend!]!
+  accountTrend(fields: String, range: Int): [AccountTrend!]!
   nameAuction(name: String!): NameAuction
   nameAuctions(page: Int, size: Int): NameAuctionsList!
   producers(page: Int, size: Int): BPList!

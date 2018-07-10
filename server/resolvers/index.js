@@ -6,7 +6,7 @@ import { SearchResult } from './Query/search';
 import { Block } from './Query/block';
 import { Transaction } from './Query/transaction';
 import { Action } from './Query/action';
-import { Account } from './Query/account';
+import { Account, AccountTrend } from './Query/account';
 import { GlobalStatus } from './Query/aggregation';
 import { Article, DictionaryEntry } from './Query/article';
 // import Mutation from './Mutation';
@@ -21,6 +21,7 @@ export default {
   Transaction,
   Action,
   Account,
+  AccountTrend,
   GlobalStatus,
   Article,
   DictionaryEntry,

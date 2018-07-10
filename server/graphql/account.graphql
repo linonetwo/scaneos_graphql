@@ -85,9 +85,11 @@ type NameAuctionsList {
   pageInfo: PageInfo
 }
 
-type AccoundTrend {
+type AccountTrend {
   eosTopAccounts: [String!]
   ramTopAccounts: [String!]
+  """Ram账号的详情，注意这将返回大量数据，请保证调用acccountTrend的range参数为0"""
+  ramTopAccountsDetail: [Account!]
   cpuTopAccounts: [String!]
   netTopAccounts: [String!]
   stakedTopAccounts: [String!]
