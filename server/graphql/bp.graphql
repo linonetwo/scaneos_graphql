@@ -28,7 +28,6 @@ type BPInfo {
   nameZh: String
   slogan: String
   sloganZh: String
-  key: String
   organization: String
   nodes: [Nodes]!
   logo: String

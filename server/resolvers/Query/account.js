@@ -172,7 +172,8 @@ export const Account = {
       size,
     }: { filterBy?: { name: string[] }, page?: number, size?: number },
   ) {
-    if (!(filterBy?.name?.length > 0)) return null;
+    if (!(filterBy?.name?.length > 0))
+      return { actions: [], pageInfo: { totalPages: 0, totalElements: 0, page: 0, size: 0, filterBy } };
     const { formatActionData } = await import('./action');
     if (filterBy.name.length === 1) {
       return get(
