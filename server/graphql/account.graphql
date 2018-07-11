@@ -51,7 +51,10 @@ type ResourceStatus {
 
 type Account {
   producerInfo: BPInfo
-  actions(type: String, page: Int, size: Int): ActionsList!
+  """
+  filterBy: { name: string[] } | 获取账户相关的消息列表，可以通过消息类型过滤 | get actions related to account, filter by action name
+  """
+  actions(filterBy: JSON, page: Int, size: Int): ActionsList!
 
   eosBalance: Float!
   eosStaked: Float!
@@ -88,7 +91,9 @@ type NameAuctionsList {
 type AccountTrend {
   eosTopAccounts: [String!]
   ramTopAccounts: [String!]
-  """Ram账号的详情，注意这将返回大量数据，请保证调用acccountTrend的range参数为0"""
+  """
+  Ram账号的详情，注意这将返回大量数据，请保证调用acccountTrend的range参数为0
+  """
   ramTopAccountsDetail: [Account!]
   cpuTopAccounts: [String!]
   netTopAccounts: [String!]

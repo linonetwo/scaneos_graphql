@@ -1,6 +1,7 @@
 // @flow
-import { find, size as objSize, flatten, fromPairs, take, drop, mapValues, last } from 'lodash';
+import { find, size as objSize, fromPairs, take, drop, mapValues, last } from 'lodash';
 import camelize from 'camelize';
+import { compareDesc } from 'date-fns';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 function getAccountDetailFromEOS(name: string) {
@@ -163,30 +164,51 @@ export const Account = {
   },
   async actions(
     { accountName }: { accountName: string },
-    { type, page, size }: { type?: string, page?: number, size?: number },
+    { filterBy = { name: ['transfer'] }, page, size }: { filterBy?: { name: string[] }, page?: number, size?: number },
   ) {
+    if (!(filterBy?.name?.length > 0)) return null;
     const { formatActionData } = await import('./action');
-    if (type) {
-      return get(`/actions/${type}?account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
-        ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
+    if (filterBy.name.length === 1) {
+      return get(
+        `/actions/?type=${filterBy.name[0]}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
+      ).then(({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
+        actions: content.map(formatActionData),
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize, filterBy },
+      }));
+    }
+    // returned multiple action lists combined into one
+    return Promise.all(
+      filterBy.name.map(async actionName => {
+        const {
+          content,
+          page: { number, size: pageSize, totalPages, totalElements },
+        } = await get(
+          `/actions/?type=${actionName}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
+        );
+        return {
           actions: content.map(formatActionData),
           pageInfo: { totalPages, totalElements, page: number, size: pageSize },
-        }),
-      );
-    }
-    // TODO: 现在是尝试加载所有消息，但此处应该优化成带分页的
-    return Promise.all([
-      get(`/actions/transfer?account=${accountName}&page=0&size=9999`),
-      get(`/actions/newtoken?issuer=${accountName}&page=0&size=9999`),
-    ]).then(actionsTypes => {
-      const actions = flatten(actionsTypes.map(({ content }) => content))
-        .map(formatActionData)
-        .filter(({ transactionID }) => transactionID);
-      return {
-        actions,
-        pageInfo: {},
-      };
-    });
+        };
+      }),
+    )
+      .then(results =>
+        results.reduce(
+          (prev, current) => ({
+            actions: [...prev.actions, ...current.actions],
+            pageInfo: {
+              totalPages: prev.pageInfo.totalPages + current.pageInfo.totalPages,
+              totalElements: prev.pageInfo.totalElements + current.pageInfo.totalElements,
+              page: current.pageInfo.page,
+              size: current.pageInfo.size,
+            },
+          }),
+          { actions: [], pageInfo: { totalPages: 0, totalElements: 0, page: 0, size: 0 } },
+        ),
+      )
+      .then(({ actions, pageInfo }) => ({
+        actions: actions.sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
+        pageInfo: { ...pageInfo, filterBy },
+      }));
   },
   createdAt: ({ created }) => new Date(created),
 };
