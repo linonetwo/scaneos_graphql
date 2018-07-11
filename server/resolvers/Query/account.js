@@ -186,7 +186,7 @@ export const Account = {
           `/actions/?type=${actionName}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
         );
         return {
-          actions: content.map(formatActionData),
+          actions: totalElements > 0 ? content.map(formatActionData) : [],
           pageInfo: { totalPages, totalElements, page: number, size: pageSize },
         };
       }),
