@@ -164,7 +164,13 @@ export const Account = {
   },
   async actions(
     { accountName }: { accountName: string },
-    { filterBy = { name: ['transfer'] }, page, size }: { filterBy?: { name: string[] }, page?: number, size?: number },
+    {
+      filterBy = {
+        name: ['transfer', 'buyram', 'buyrambytes', 'sellram'],
+      },
+      page,
+      size,
+    }: { filterBy?: { name: string[] }, page?: number, size?: number },
   ) {
     if (!(filterBy?.name?.length > 0)) return null;
     const { formatActionData } = await import('./action');
