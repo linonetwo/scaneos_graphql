@@ -12,6 +12,7 @@ type Block {
   producerAccountID: String!
   pending: Boolean
   transactions(page: Int, size: Int): TransactionsList!
+  transactionIDs: [String!]!
   transactionNum: Int!
 }
 type BlocksList {

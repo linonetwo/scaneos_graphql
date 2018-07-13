@@ -1,5 +1,5 @@
 // @flow
-import { take, drop } from 'lodash';
+import { take, drop, head } from 'lodash';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export function getFirstBlockIdFromBlockListResponse(data: Object) {
@@ -9,10 +9,11 @@ export function getFirstBlockIdFromBlockListResponse(data: Object) {
   return null;
 }
 
-const formatBlockData = ({ blockId, prevBlockId, producerAccountId, ...rest }) => ({
+const formatBlockData = ({ blockId, prevBlockId, producerAccountId, transactionId, ...rest }) => ({
   blockID: blockId,
   prevBlockID: prevBlockId,
   producerAccountID: producerAccountId,
+  transactionID: transactionId,
   ...rest,
 });
 
@@ -33,11 +34,24 @@ export const Block = {
     ) => {
       const totalElements = transactions.length;
       const totalPages = Math.ceil(totalElements / size);
+      const pagedTransactions = take(drop(transactions, page * size), size);
+      if (typeof head(transactions) === 'string') {
+        const { getTransactionByID } = await import('./transaction');
+        return {
+          transactions: pagedTransactions.map(getTransactionByID),
+          pageInfo: { totalPages, totalElements, page, size },
+        };
+      }
       return {
-        transactions: take(drop(transactions, page * size), size),
+        transactions: pagedTransactions,
         pageInfo: { totalPages, totalElements, page, size },
       };
     },
+  },
+  transactionIDs: ({ transactions = [] }) => {
+    if (typeof head(transactions) === 'string') return transactions;
+    if (typeof head(transactions) === 'object') return transactions.map(({ transactionID }) => transactionID);
+    return [];
   },
   transactionNum: ({ transactions: transactionIDs = [] }) => transactionIDs.length,
 };
@@ -51,10 +65,12 @@ export default {
     );
   },
   block(_: any, { blockNum, id, blockNumOrID }: { blockNum?: number, id?: string, blockNumOrID?: number | string }) {
-    if (typeof blockNum === 'number') return getBlockByBlockNum(blockNum);
+    if (typeof blockNum === 'number') return getBlockByBlockNum(blockNum).then(formatBlockData);
     if (typeof blockNumOrID === 'number' || Number.isFinite(Number(blockNumOrID)))
       return get(`/blocks?block_num=${String(blockNumOrID)}`).then(formatBlockData);
     // 尝试把 blockID 转换成「区块高度 blockNum」
-    return getBlockByBlockID(id || String(blockNumOrID));
+    return getBlockByBlockID(id || String(blockNumOrID))
+      .then(result => getBlockByBlockNum(result.blockNum))
+      .then(formatBlockData);
   },
 };
