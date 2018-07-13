@@ -45,7 +45,7 @@ export default {
 
     // 搜索黏贴的时候可能带上了空格
     keyWord = keyWord.replace(/\s/g, '');
-    if (keyWord.replace(/\s/g, '').length === 64) {
+    if (keyWord.length === 64) {
       // 长度为 64 的可能是 blockId，或者 transactionId
       // 先试试 Transaction
       const { getTransactionByID } = await import('./transaction');

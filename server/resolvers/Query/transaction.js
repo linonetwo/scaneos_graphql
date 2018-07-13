@@ -13,7 +13,9 @@ const formatTransactionData = ({ blockId, transactionId, ...rest }) => {
 };
 
 export function getTransactionByID(id: string) {
-  return get(`/transactions?transaction_id=${id}`).then(formatTransactionData);
+  return get(`/transactions?transaction_id=${id}`)
+    .then(formatTransactionData)
+    .catch(() => null);
 }
 
 export const Transaction = {
