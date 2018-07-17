@@ -54,7 +54,7 @@ type Action {
   handlerAccountName: String
   name: String
   data: JSON
-  timestamp: DateTime!
+  timestamp: DateTime
 }
 type ActionsList {
   actions: [Action!]
