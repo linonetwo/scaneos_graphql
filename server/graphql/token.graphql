@@ -3,7 +3,7 @@
 type Token {
   issuer: String
   maximumSupply: String
-  createdAt: String
+  timestamp: String
 }
 type TokensList {
   tokens: [Token!]!
