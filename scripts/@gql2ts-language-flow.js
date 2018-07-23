@@ -1,5 +1,6 @@
 const { DEFAULT_OPTIONS: TS_OPTIONS } = require('@gql2ts/language-typescript');
 const { pascalize } = require('humps');
+const util = require('@gql2ts/util');
 
 const FLOW_WRAP_PARTIAL = partial => `$SHAPE<${partial}>`;
 const FLOW_INTERFACE_NAMER = name => `${pascalize(name)}`;
@@ -19,6 +20,15 @@ const DEFAULT_OPTIONS = {
   printType: FLOW_TYPE_PRINTER,
   generateInterfaceName: FLOW_INTERFACE_NAMER,
   generateEnumName: FLOW_ENUM_NAME_GENERATOR,
+  enumTypeBuilder: (name, values) => `type ${name} = ${values}`,
+  formatEnum: (values, documentationGenerator) => `
+    ${util.filterAndJoinArray(
+      values.map(value =>
+        util.filterAndJoinArray([documentationGenerator(util.buildDocumentation(value)), `'${value.name}'`]),
+      ),
+      ' |\n',
+    )}
+  `,
   interfaceBuilder: FLOW_INTERFACE_BUILDER,
   generateNamespace: FLOW_NAMESPACE_GENERATOR,
   wrapPartial: FLOW_WRAP_PARTIAL,
