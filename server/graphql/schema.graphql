@@ -22,16 +22,24 @@ type Query {
 
   account(name: String!): Account
   accounts(sortBy: String, page: Int, size: Int): AccountsList!
-  accountTrend(fields: String, range: Int): [AccountTrend!]!
+  """
+  取账号根据EOS、Ram、Stkae的变动情况，range限制数据天数, sampleRate是一个小于一的小数用于限制返回的数据量 | get account rank changing history, limit day range by 'range', limit data size by 'sampleRate'
+  """
+  accountTrend(fields: String, range: Int, sampleRate: Float): [AccountTrend!]!
   nameAuction(name: String!): NameAuction
   nameAuctions(page: Int, size: Int): NameAuctionsList!
-  """获取超级节点列表，可以用逗号分隔的洲名来过滤 | get block producer list, filter by comma saparated continent name"""
+  """
+  获取超级节点列表，可以用逗号分隔的洲名来过滤 | get block producer list, filter by comma saparated continent name
+  """
   producers(page: Int, size: Int, filterBy: JSON): BPList!
 
   price: EOSPrice!
   priceChart: EOSPriceChart!
   resourcePrice: ResourcePrice!
-  resourcePriceChart: ResourcePriceChart!
+  """
+  EOS资源价格变化图表，range 是 5d 1d 1h 5min, sampleRate是一个小于一的小数用于限制返回的数据量 | price chart for EOS resoures, limit range by 5d 1d 1h 5min, limit data size by 'sampleRate'
+  """
+  resourcePriceChart(range: String, sampleRate: Float): ResourcePriceChart!
 
   articles(page: Int, size: Int): ArticlesList!
   """

@@ -320,8 +320,15 @@ export default {
         }),
       );
   },
-  async accountTrend(_: any, { fields = 'eos', range = 0 }: { fields?: string, range?: number }) {
+  async accountTrend(
+    _: any,
+    { fields = 'eos', range = 0, sampleRate = 1 }: { fields?: string, range?: number, sampleRate?: number },
+  ) {
     const data = await get(`/accounts/trend?view=${fields}&range=${range || 1}`);
-    return range > 0 ? data : [last(data)];
+    // range 意为取过去几天的数据
+    const rangedData = range > 0 ? data : [last(data)];
+    // sample 是为了减小数据量，每隔几个数据才取一次
+    const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), rangedData.length);
+    return rangedData.filter((__, index) => index % sampleInterval === 0);
   },
 };

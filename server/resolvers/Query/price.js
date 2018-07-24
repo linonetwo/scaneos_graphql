@@ -1,3 +1,4 @@
+// @flow
 import { mapValues } from 'lodash';
 import fetch from 'node-fetch';
 import camelize from 'camelize';
@@ -21,7 +22,9 @@ export default {
   },
   priceChart() {
     // from https://coinmarketcap.com/currencies/eos/ look at network
-    return fetch(`https://graphs2.coinmarketcap.com/currencies/eos/${Date.now() + -5 * 24 * 3600 * 1000}/${Date.now()}/`)
+    return fetch(
+      `https://graphs2.coinmarketcap.com/currencies/eos/${Date.now() + -5 * 24 * 3600 * 1000}/${Date.now()}/`,
+    )
       .then(res => res.json())
       .then(camelize)
       .then(chartFields => mapValues(chartFields, it.map(([time, value]) => ({ time, value }))));
@@ -57,7 +60,7 @@ export default {
           const cpuAvailable = cpuMaxLimit / 1000; // microseconds to milliseconds
           return {
             netPrice: netStaked / netAvailable,
-            cpuPrice: cpuStaked / cpuAvailable * 1000, // use second as unit
+            cpuPrice: (cpuStaked / cpuAvailable) * 1000, // use second as unit
           };
         },
       ),
@@ -70,12 +73,24 @@ export default {
       cpuPrice,
     }));
   },
-  async resourcePriceChart() {
-    const ramPriceRawValues = await fetch(
-      `https://www.feexplorer.io/json/EOSramPrice.php?start=${Date.now() + -5 * 24 * 3600 * 1000}&end=${Date.now()}`,
+  async resourcePriceChart(_: any, { range = '5d', sampleRate = 1 }: { range?: string, sampleRate?: number }) {
+    const ramPrice = await fetch(
+      `https://www.feexplorer.io/json/EOSramPrice.php?start=${Date.now() -
+        do {
+          if (range === '5d') 5 * 24 * 3600 * 1000;
+          if (range === '1d') 1 * 24 * 3600 * 1000;
+          if (range === '1h') 3600 * 1000;
+          if (range === '5min') 300 * 1000;
+        }}&end=${Date.now()}`,
     )
       .then(res => res.text())
-      .then(text => JSON.parse(text.substring(1, text.length - 1)));
-    return { ramPrice: ramPriceRawValues.map(([time, value]) => ({ time, value })) };
+      .then(text => JSON.parse(text.substring(1, text.length - 1)))
+      .then(data => data.map(([time, value]) => ({ time, value })))
+      .then(data => {
+        // sample 是为了减小数据量，每隔几个数据才取一次
+        const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), data.length);
+        return data.filter((__, index) => index % sampleInterval === 0);
+      });
+    return { ramPrice };
   },
 };
