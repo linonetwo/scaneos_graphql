@@ -1,5 +1,5 @@
 // @flow
-import { mapValues } from 'lodash';
+import { mapValues, chunk, minBy, maxBy } from 'lodash';
 import fetch from 'node-fetch';
 import camelize from 'camelize';
 import it from 'param.macro';
@@ -73,8 +73,7 @@ export default {
       cpuPrice,
     }));
   },
-  async resourcePriceChart(_: any, { range = '5d', sampleRate = 1 }: { range?: string, sampleRate?: number }) {
-
+  async resourcePriceChart(_: any, { range = '5d' }: { range?: string }) {
     let startTimeDiff = 3600 * 1000;
     if (range === '5d') {
       startTimeDiff = 5 * 24 * 3600 * 1000;
@@ -92,12 +91,30 @@ export default {
       .then(res => res.text())
       .then(text => JSON.parse(text.substring(1, text.length - 1)))
       .then(data => data.map(([time, value]) => ({ time, value })))
-      .then(data => {
-        // sample 是为了减小数据量，每隔几个数据才取一次
-        const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), data.length);
-        return data.filter((__, index) => index % sampleInterval === 0);
-      })
       .catch(console.error);
+
     return { ramPrice };
+  },
+};
+export const ResourcePriceChart = {
+  sampledRamPrice({ ramPrice = [] }, { sampleRate = 1 }: { sampleRate?: number }) {
+    // sample 是为了减小数据量，每隔几个数据才取一次
+    const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), ramPrice.length);
+    const sampledRamPrice = ramPrice.filter((__, index) => index % sampleInterval === 0);
+    return sampledRamPrice;
+  },
+  ramKChart({ ramPrice = [] }, { kChartChunkSize = 10 }: { kChartChunkSize?: number }) {
+    const ramKChart =
+      kChartChunkSize > 1
+        ? chunk(ramPrice, kChartChunkSize).map(valuesInAChunk => ({
+            time: valuesInAChunk[0].time,
+            open: valuesInAChunk[0].value,
+            close: valuesInAChunk[valuesInAChunk.length - 1].value,
+            lowest: minBy(valuesInAChunk, 'value').value,
+            highest: maxBy(valuesInAChunk, 'value').value,
+          }))
+        : [];
+
+    return ramKChart;
   },
 };

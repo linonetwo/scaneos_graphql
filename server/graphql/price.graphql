@@ -4,6 +4,17 @@ type ChartItem {
   time: DateTime
   value: Float
 }
+type KChartItem {
+  time: DateTime
+  """开盘"""
+  open: Float
+  """收盘"""
+  close: Float
+  """最低"""
+  lowest: Float
+  """最高"""
+  highest: Float
+}
 
 type EOSPrice {
   name: String
@@ -37,4 +48,12 @@ type ResourcePrice {
 }
 type ResourcePriceChart {
   ramPrice: [ChartItem!]!
+  """
+  sampleRate是一个小于一的小数用于限制返回的数据量 | limit data size by 'sampleRate'
+  """
+  sampledRamPrice(sampleRate: Float): [ChartItem!]!
+  """
+  kChartChunkSize 是K线的采样宽度,隔几个数据合并为一个蜡烛 | sample candlestick by kChartChunkSize, it is used for chunking data array
+  """
+  ramKChart(kChartChunkSize: Int): [KChartItem!]!
 }

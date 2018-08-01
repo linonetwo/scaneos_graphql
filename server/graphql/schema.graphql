@@ -37,9 +37,9 @@ type Query {
   priceChart: EOSPriceChart!
   resourcePrice: ResourcePrice!
   """
-  EOS资源价格变化图表，range 是 5d 1d 1h 5min, sampleRate是一个小于一的小数用于限制返回的数据量 | price chart for EOS resoures, limit range by 5d 1d 1h 5min, limit data size by 'sampleRate'
+  EOS资源价格变化图表，range 是 5d 1d 1h 5min | price chart for EOS resoures, limit range by 5d 1d 1h 5min
   """
-  resourcePriceChart(range: String, sampleRate: Float): ResourcePriceChart!
+  resourcePriceChart(range: String): ResourcePriceChart!
 
   articles(page: Int, size: Int): ArticlesList!
   """

@@ -6,6 +6,7 @@ import { SearchResult } from './Query/search';
 import { Block } from './Query/block';
 import { Transaction } from './Query/transaction';
 import { Action } from './Query/action';
+import { ResourcePriceChart } from './Query/price';
 import { Account, AccountTrend } from './Query/account';
 import { GlobalStatus } from './Query/aggregation';
 import { Article, DictionaryEntry } from './Query/article';
@@ -21,6 +22,7 @@ export default {
   Transaction,
   Action,
   Account,
+  ResourcePriceChart,
   AccountTrend,
   GlobalStatus,
   Article,
