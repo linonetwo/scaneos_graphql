@@ -74,14 +74,20 @@ export default {
     }));
   },
   async resourcePriceChart(_: any, { range = '5d', sampleRate = 1 }: { range?: string, sampleRate?: number }) {
+
+    let startTimeDiff = 3600 * 1000;
+    if (range === '5d') {
+      startTimeDiff = 5 * 24 * 3600 * 1000;
+    }
+    if (range === '1d') {
+      startTimeDiff = 1 * 24 * 3600 * 1000;
+    }
+    if (range === '1h') {
+      startTimeDiff = 3600 * 1000;
+    }
+
     const ramPrice = await fetch(
-      `https://www.feexplorer.io/json/EOSramPrice.php?start=${Date.now() -
-        do {
-          if (range === '5d') 5 * 24 * 3600 * 1000;
-          if (range === '1d') 1 * 24 * 3600 * 1000;
-          if (range === '1h') 3600 * 1000;
-          if (range === '5min') 300 * 1000;
-        }}&end=${Date.now()}`,
+      `https://www.feexplorer.io/json/EOSramPrice.php?start=${Date.now() - startTimeDiff}&end=${Date.now()}`,
     )
       .then(res => res.text())
       .then(text => JSON.parse(text.substring(1, text.length - 1)))
@@ -90,7 +96,8 @@ export default {
         // sample 是为了减小数据量，每隔几个数据才取一次
         const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), data.length);
         return data.filter((__, index) => index % sampleInterval === 0);
-      });
+      })
+      .catch(console.error);
     return { ramPrice };
   },
 };
