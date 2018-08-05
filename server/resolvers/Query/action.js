@@ -1,6 +1,7 @@
 // @flow
 import { size as objSize } from 'lodash';
 import utf8 from 'utf8';
+import qs from 'query-string';
 import get, { PAGE_SIZE_DEFAULT } from '../../../API.config';
 
 export const formatActionData = ({ actionId, transactionId, data, ...rest }) => ({
@@ -20,8 +21,12 @@ export const Action = {
   },
 };
 export default {
-  actions(_: any, { page, size }: { page?: number, size?: number }) {
-    return get(`/actions?page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`).then(
+  actions(_: any, { page = 0, size = PAGE_SIZE_DEFAULT }: { page?: number, size?: number }) {
+    const query = qs.stringify({
+      page,
+      size,
+    });
+    return get(`/actions?${query}`).then(
       ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         actions: content.map(formatActionData),
         pageInfo: { totalPages, totalElements, page: number, size: pageSize },

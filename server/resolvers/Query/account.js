@@ -2,7 +2,9 @@
 import { find, size as objSize, fromPairs, take, drop, mapValues, last } from 'lodash';
 import camelize from 'camelize';
 import { compareDesc } from 'date-fns';
+import qs from 'query-string';
 import get, { postEOS, getCMS, CMS_BASE, PAGE_SIZE_DEFAULT } from '../../../API.config';
+import { formatActionData } from './action';
 
 function getAccountDetailFromEOS(name: string) {
   return postEOS('/chain/get_account', { account_name: name }).then(({ error, ...rest }) => (error ? null : rest));
@@ -174,7 +176,6 @@ export const Account = {
   ) {
     if (!(filterBy?.name?.length > 0))
       return { actions: [], pageInfo: { totalPages: 0, totalElements: 0, page: 0, size: 0, filterBy } };
-    const { formatActionData } = await import('./action');
     if (filterBy.name.length === 1) {
       return get(
         `/actions/?type=${filterBy.name[0]}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
@@ -216,6 +217,33 @@ export const Account = {
         actions: actions.sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
         pageInfo: { ...pageInfo, filterBy },
       }));
+  },
+  messageList(
+    { accountName }: { accountName: string },
+    {
+      filterBy = {
+        name: ['transfer', 'buyram', 'buyrambytes', 'sellram'],
+      },
+      page,
+      size,
+    }: { filterBy?: { name: string[] }, page?: number, size?: number },
+  ) {
+    const matchList = ['transfer', 'buyram', 'buyrambytes', 'sellram'];
+    const nomatch = matchList.filter(filter => filterBy.name.includes(filter)).join(',');
+    const query = qs.stringify({
+      page,
+      size,
+      match: accountName,
+      nomatch,
+      matchasphrase: false,
+      nomatchasphrase: true,
+    });
+    return get(`/actions/text?${query}`).then(
+      ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
+        actions: content.map(formatActionData).sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
+        pageInfo: { totalPages, totalElements, page: number, size: pageSize, filterBy },
+      }),
+    );
   },
   createdAt: ({ created }) => new Date(created),
 };

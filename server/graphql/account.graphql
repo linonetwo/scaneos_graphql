@@ -55,7 +55,7 @@ type Account {
   filterBy: { name: string[] } | 获取账户相关的消息列表，可以通过消息类型过滤 | get actions related to account, filter by action name
   """
   actions(filterBy: JSON, page: Int, size: Int): ActionsList!
-
+  messageList(filterBy: JSON, page: Int, size: Int): ActionsList!
   eosBalance: Float!
   eosStaked: Float!
   tokenBalance(token: String): JSON
