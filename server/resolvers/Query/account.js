@@ -164,84 +164,49 @@ export const Account = {
       getBPDetailFromCMS(accountName),
     ]).then(([bpData, cmsData]) => bpData && cmsData && mixBPDataWithCMSData(bpData, cmsData));
   },
-  async actions(
+  actions(
     { accountName }: { accountName: string },
-    {
-      filterBy = {
-        name: ['transfer', 'buyram', 'buyrambytes', 'sellram'],
-      },
-      page,
-      size,
-    }: { filterBy?: { name: string[] }, page?: number, size?: number },
+    { filterBy, page, size }: { filterBy?: { name: string[] }, page?: number, size?: number },
   ) {
-    if (!(filterBy?.name?.length > 0))
-      return { actions: [], pageInfo: { totalPages: 0, totalElements: 0, page: 0, size: 0, filterBy } };
-    if (filterBy.name.length === 1) {
-      return get(
-        `/actions/?type=${filterBy.name[0]}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
-      ).then(({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
-        actions: content.map(formatActionData),
-        pageInfo: { totalPages, totalElements, page: number, size: pageSize, filterBy },
-      }));
-    }
-    // returned multiple action lists combined into one
-    return Promise.all(
-      filterBy.name.map(async actionName => {
-        const {
-          content,
-          page: { number, size: pageSize, totalPages, totalElements },
-        } = await get(
-          `/actions/?type=${actionName}&account=${accountName}&page=${page || 0}&size=${size || PAGE_SIZE_DEFAULT}`,
-        );
-        return {
-          actions: totalElements > 0 ? content.map(formatActionData) : [],
-          pageInfo: { totalPages, totalElements, page: number, size: pageSize },
-        };
-      }),
-    )
-      .then(results =>
-        results.reduce(
-          (prev, current) => ({
-            actions: [...prev.actions, ...current.actions],
-            pageInfo: {
-              totalPages: prev.pageInfo.totalPages + current.pageInfo.totalPages,
-              totalElements: prev.pageInfo.totalElements + current.pageInfo.totalElements,
-              page: current.pageInfo.page,
-              size: current.pageInfo.size,
-            },
-          }),
-          { actions: [], pageInfo: { totalPages: 0, totalElements: 0, page: 0, size: 0 } },
-        ),
-      )
-      .then(({ actions, pageInfo }) => ({
-        actions: actions.sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
-        pageInfo: { ...pageInfo, filterBy },
-      }));
-  },
-  messageList(
-    { accountName }: { accountName: string },
-    {
-      filterBy = {
-        name: ['transfer', 'buyram', 'buyrambytes', 'sellram'],
-      },
-      page,
-      size,
-    }: { filterBy?: { name: string[] }, page?: number, size?: number },
-  ) {
-    const matchList = ['transfer', 'buyram', 'buyrambytes', 'sellram'];
-    const nomatch = matchList.filter(filter => filterBy.name.includes(filter)).join(',');
+    const matchList = [
+      'transfer',
+      'setabi',
+      'newaccount',
+      'updateauth',
+      'buyram',
+      'buyrambytes',
+      'sellram',
+      'delegatebw',
+      'undelegatebw',
+      'refund',
+      'regproducer',
+      'bidname',
+      'voteproducer',
+      'claimrewards',
+      'create',
+      'issue',
+    ];
+    const nomatch = filterBy?.name?.length > 0 ? matchList.filter(filter => !filterBy.name.includes(filter)) : [];
     const query = qs.stringify({
       page,
       size,
       match: accountName,
       nomatch,
       matchasphrase: false,
-      nomatchasphrase: true,
+      nomatchasphrase: false,
     });
+    console.log(`/actions/text?${query}`);
     return get(`/actions/text?${query}`).then(
       ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         actions: content.map(formatActionData).sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
-        pageInfo: { totalPages, totalElements, page: number, size: pageSize, filterBy },
+        pageInfo: {
+          totalPages,
+          totalElements,
+          page: number,
+          size: pageSize,
+          filterBy: filterBy?.name ? filterBy : { name: matchList },
+          filters: { name: matchList },
+        },
       }),
     );
   },
