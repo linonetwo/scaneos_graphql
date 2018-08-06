@@ -31,6 +31,12 @@ const getBPList = () =>
     limit: 100000,
   }).then(({ rows }) => rows);
 const mixBPDataWithCMSData = (bpData, cmsData) => {
+  if (bpData && !cmsData) {
+    return { ...bpData, account: bpData.owner, homepage: bpData.url, key: bpData.producerKey };
+  }
+  if (cmsData && !bpData) {
+    return cmsData;
+  }
   const { url, producerKey, ...rest } = bpData;
   return { account: rest.owner, homepage: url, ...rest, ...cmsData, key: cmsData?.key || producerKey };
 };
@@ -162,7 +168,7 @@ export const Account = {
     return Promise.all([
       getBPList().then(bpList => find(bpList, { owner: accountName })),
       getBPDetailFromCMS(accountName),
-    ]).then(([bpData, cmsData]) => bpData && cmsData && mixBPDataWithCMSData(bpData, cmsData));
+    ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
   },
   actions(
     { accountName }: { accountName: string },
