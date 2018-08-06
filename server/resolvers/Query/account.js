@@ -195,7 +195,6 @@ export const Account = {
       matchasphrase: false,
       nomatchasphrase: false,
     });
-    console.log(`/actions/text?${query}`);
     return get(`/actions/text?${query}`).then(
       ({ content, page: { number, size: pageSize, totalPages, totalElements } }) => ({
         actions: content.map(formatActionData).sort((a, b) => compareDesc(a.createdAt, b.createdAt)),
