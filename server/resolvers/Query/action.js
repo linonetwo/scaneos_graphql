@@ -24,7 +24,7 @@ export const Action = {
 export default {
   actions(_: any, { filterBy, page = 0, size = PAGE_SIZE_DEFAULT }: { filterBy?: { match: string }, page?: number, size?: number }) {
     // search specific text
-    if (filterBy.match) {
+    if (filterBy?.match) {
       const query = qs.stringify({
         page,
         size,
