@@ -16,7 +16,10 @@ type Query {
   block(blockNum: Int, id: ID, blockNumOrID: String): Block
   transactions(page: Int, size: Int): TransactionsList!
   transaction(id: String): Transaction
-  actions(page: Int, size: Int): ActionsList!
+  """
+  操作消息列表，filterBy: { text: string } 用于搜索 | EOS actions list, use filterBy: { text: string } to search
+  """
+  actions(page: Int, size: Int, filterBy: JSON): ActionsList!
   action(id: String): Action
   tokens(page: Int, size: Int): TokensList!
 
