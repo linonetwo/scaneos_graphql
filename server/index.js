@@ -47,14 +47,14 @@ const server = new ApolloServer({
 });
 server.applyMiddleware({ app, gui: true });
 
-const engine = new ApolloEngine({
-  apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
-});
-engine.listen(
+// const engine = new ApolloEngine({
+//   apiKey: 'service:scaneos_web:v8pNxtRwdTZDemJWuGw6HA',
+// });
+app.listen(
   {
     port: 3002,
-    expressApp: app,
-    graphqlPaths: [process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql'],
+    // expressApp: app,
+    // graphqlPaths: [process.env.NODE_ENV === 'production' ? '/gqapi/graphql' : '/graphql'],
   },
   () => {
     console.log(chalk.blueBright.bgWhite(`🚀 Server ready at ${GRAPHQL_API} 💹`));
