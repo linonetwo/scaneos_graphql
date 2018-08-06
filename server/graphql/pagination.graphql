@@ -5,4 +5,5 @@ type PageInfo {
   size: Int
   sortBy: String
   filterBy: JSON
+  filters: JSON
 }
