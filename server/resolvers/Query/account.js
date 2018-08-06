@@ -31,6 +31,9 @@ const getBPList = () =>
     limit: 100000,
   }).then(({ rows }) => rows);
 const mixBPDataWithCMSData = (bpData, cmsData) => {
+  if (!bpData && !cmsData) {
+    return null;
+  }
   if (bpData && !cmsData) {
     return { ...bpData, account: bpData.owner, homepage: bpData.url, key: bpData.producerKey };
   }
