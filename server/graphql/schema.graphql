@@ -37,10 +37,10 @@ type Query {
   producers(page: Int, size: Int, filterBy: JSON): BPList!
 
   price: EOSPrice!
-  priceChart: EOSPriceChart!
+  priceChart(sampleRate: Float): EOSPriceChart!
   resourcePrice: ResourcePrice!
   """
-  EOS资源价格变化图表，range 是 5d 1d 1h 5min | price chart for EOS resoures, limit range by 5d 1d 1h 5min
+  EOS资源价格变化图表，range 是 5d 1d 5h | price chart for EOS resoures, limit range by 5d 1d 5h
   """
   resourcePriceChart(range: String): ResourcePriceChart!
 

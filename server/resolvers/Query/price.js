@@ -6,6 +6,13 @@ import it from 'param.macro';
 
 import { postEOS } from '../../../API.config';
 
+/** sample 是为了减小数据量，每隔几个数据才取一次 */
+function sampleChartValues(sampleRate: number, data: any[]) {
+  const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), data.length);
+  const sampledData = data.filter((__, index) => index % sampleInterval === 0);
+  return sampledData;
+}
+
 export default {
   price() {
     return fetch('https://widgets.coinmarketcap.com/v2/ticker/1765/?ref=widget&convert=USD')
@@ -20,14 +27,19 @@ export default {
         ...data,
       }));
   },
-  priceChart() {
+  priceChart(_: any, { sampleRate = 1 }: { sampleRate?: number }) {
     // from https://coinmarketcap.com/currencies/eos/ look at network
     return fetch(
       `https://graphs2.coinmarketcap.com/currencies/eos/${Date.now() + -5 * 24 * 3600 * 1000}/${Date.now()}/`,
     )
       .then(res => res.json())
       .then(camelize)
-      .then(chartFields => mapValues(chartFields, it.map(([time, value]) => ({ time, value }))));
+      .then(chartFields =>
+        mapValues(
+          mapValues(chartFields, data => sampleChartValues(sampleRate, data)),
+          it.map(([time, value]) => ({ time, value })),
+        ),
+      );
   },
   resourcePrice() {
     return Promise.all([
@@ -74,15 +86,15 @@ export default {
     }));
   },
   async resourcePriceChart(_: any, { range = '5d' }: { range?: string }) {
-    let startTimeDiff = 3600 * 1000;
+    let startTimeDiff = 5 * 3600 * 1000;
     if (range === '5d') {
       startTimeDiff = 5 * 24 * 3600 * 1000;
     }
     if (range === '1d') {
       startTimeDiff = 1 * 24 * 3600 * 1000;
     }
-    if (range === '1h') {
-      startTimeDiff = 3600 * 1000;
+    if (range === '5h') {
+      startTimeDiff = 5 * 3600 * 1000;
     }
 
     const ramPrice = await fetch(
@@ -98,10 +110,7 @@ export default {
 };
 export const ResourcePriceChart = {
   sampledRamPrice({ ramPrice = [] }, { sampleRate = 1 }: { sampleRate?: number }) {
-    // sample 是为了减小数据量，每隔几个数据才取一次
-    const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), ramPrice.length);
-    const sampledRamPrice = ramPrice.filter((__, index) => index % sampleInterval === 0);
-    return sampledRamPrice;
+    return sampleChartValues(sampleRate, ramPrice);
   },
   ramKChart({ ramPrice = [] }, { kChartChunkSize = 10 }: { kChartChunkSize?: number }) {
     const ramKChart =
