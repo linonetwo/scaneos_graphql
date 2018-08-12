@@ -5,6 +5,7 @@
 # import GlobalStatus from "./aggregation.graphql"
 # import ArticlesList, DictionaryEntry, DictionaryEntriesList from "./article.graphql"
 # import TokensList from "./token.graphql"
+# import Commit from "./repo.graphql"
 
 union SearchResult = Block | Transaction | Account
 
@@ -53,4 +54,8 @@ type Query {
   获取百科条目列表，可以用关键字搜索 | get dictionary entries list, can search by keyWord
   """
   dictionaryEntries(keyWord: String, page: Int, size: Int): DictionaryEntriesList!
+  """
+  EOS 对应的GitHub repo信息
+  """
+  commit: Commit
 }

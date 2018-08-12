@@ -36,3 +36,15 @@ export const getCMS = (path: string) =>
   )
     .then(res => res.json())
     .then(camelize);
+
+export const GITHUB_BASE = 'https://api.github.com/';
+export const EOS_REPO_BASE = `${GITHUB_BASE}repos/EOSIO/eos/`;
+const GITHUB_TOKEN = `fb01156cc6520fab851b4de5c74457ae0bda896a`;
+export const getEOSRepoApi = (path: string) => 
+  fetch(
+    new Request(`${EOS_REPO_BASE}${path}`, {
+      headers: new Headers({ Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' }),
+    }),
+  )
+  .then(res => res.json())
+  .then(camelize);

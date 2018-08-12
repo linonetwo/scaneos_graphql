@@ -7,6 +7,7 @@ import token from './token';
 import account from './account';
 import price from './price';
 import article from './article';
+import repo from './repo';
 
 export default {
   ...searches,
@@ -18,4 +19,5 @@ export default {
   ...account,
   ...price,
   ...article,
+  ...repo,
 };

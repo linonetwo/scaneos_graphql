@@ -1,0 +1,6 @@
+
+type Commit {
+  days: [Int],
+  total: Int,
+  week: Int,
+}
