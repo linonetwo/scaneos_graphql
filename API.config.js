@@ -18,7 +18,16 @@ export const postEOS = (path: string, body: Object) =>
     method: 'POST',
     body: JSON.stringify(body),
   })
-    .then(res => res.json())
+    .then(async res => {
+      const backupForErrorLogging = res.clone();
+      try {
+        const resultJSON = await res.json();
+        return resultJSON;
+      } catch (error) {
+        const errorText = await backupForErrorLogging.text();
+        console.log(`${EOS_API}${path}`, error, errorText);
+      }
+    })
     .then(camelize);
 
 export const MAPBOX_TOKEN =
