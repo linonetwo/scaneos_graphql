@@ -76,14 +76,16 @@ export default {
           };
         },
       ),
-    ]).then(([{ supply, ramVolumn, ramMarketcap, ramPrice }, { netPrice, cpuPrice }]) => ({
-      supply,
-      ramVolumn,
-      ramMarketcap,
-      ramPrice,
-      netPrice,
-      cpuPrice,
-    }));
+    ])
+      .then(([{ supply, ramVolumn, ramMarketcap, ramPrice }, { netPrice, cpuPrice }]) => ({
+        supply,
+        ramVolumn,
+        ramMarketcap,
+        ramPrice,
+        netPrice,
+        cpuPrice,
+      }))
+      .catch(console.error);
   },
   async resourcePriceChart(_: any, { range = '5d' }: { range?: string }) {
     let startTimeDiff = 5 * 3600 * 1000;
