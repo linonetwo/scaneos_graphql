@@ -41,7 +41,9 @@ export default {
         ),
       );
   },
-  resourcePrice() {
+  resourcePrice(_: any, __: any, ___: any, { cacheControl }: Object) {
+    cacheControl.setCacheHint({ maxAge: 10 });
+
     return Promise.all([
       postEOS('/chain/get_table_rows', {
         json: true,

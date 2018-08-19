@@ -5,7 +5,9 @@ export const GlobalStatus = {
   lastPervoteBucketFill: ({ lastPervoteBucketFill }) => Number(lastPervoteBucketFill) / 1000,
 };
 export default {
-  status() {
+  status(_: any, __: any, ___: any, { cacheControl }: Object) {
+    cacheControl.setCacheHint({ maxAge: 5 });
+
     return Promise.all([
       get('/stats'),
       postEOS('/chain/get_table_rows', {
