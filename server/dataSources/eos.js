@@ -61,4 +61,24 @@ export default class EOS extends RESTDataSource {
     }
     return response;
   }
+
+  async getBPList() {
+    const route = 'chain/get_table_rows';
+    const key = `${route}/producers`;
+    let response = cache.get(key);
+    if (!response) {
+      response = await this.post(route, {
+        json: true,
+        code: 'eosio',
+        scope: 'eosio',
+        table: 'producers',
+        limit: 100000,
+      })
+        .then(camelize)
+        .then(({ rows }) => rows);
+      if (typeof response === 'string') throw new Error(`${key} error: ${response}`);
+      cache.put(key, response, 1000 * 900);
+    }
+    return response;
+  }
 }

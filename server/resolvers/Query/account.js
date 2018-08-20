@@ -22,14 +22,6 @@ export async function getAccountByName(accountName: string) {
 
   return { ...data, tokenBalance: balanceData.join(', ') };
 }
-const getBPList = () =>
-  postEOS('/chain/get_table_rows', {
-    json: true,
-    code: 'eosio',
-    scope: 'eosio',
-    table: 'producers',
-    limit: 100000,
-  }).then(({ rows }) => rows);
 const mixBPDataWithCMSData = (bpData, cmsData) => {
   if (!bpData && !cmsData) {
     return null;
@@ -166,10 +158,10 @@ export const Account = {
       fromPairs(balanceData.map(valueString => valueString.split(' ').reverse())),
     );
   },
-  producerInfo({ accountName }: { accountName: string }, _: any, __: any, { cacheControl }: Object) {
+  producerInfo({ accountName }: { accountName: string }, _: any, { dataSources }, { cacheControl }: Object) {
     cacheControl.setCacheHint({ maxAge: 60 });
     return Promise.all([
-      getBPList().then(bpList => find(bpList, { owner: accountName })),
+      dataSources.eos.getBPList().then(bpList => find(bpList, { owner: accountName })),
       getBPDetailFromCMS(accountName),
     ]).then(([bpData, cmsData]) => mixBPDataWithCMSData(bpData, cmsData));
   },
@@ -259,9 +251,9 @@ export default {
   ) {
     cacheControl.setCacheHint({ maxAge: 60 });
 
-    const bpListPromise = getBPList().then(bpList =>
-      bpList.sort((a, b) => Number(b.totalVotes) - Number(a.totalVotes)),
-    );
+    const bpListPromise = dataSources.eos
+      .getBPList()
+      .then(bpList => bpList.sort((a, b) => Number(b.totalVotes) - Number(a.totalVotes)));
     const cmsListPromise = dataSources.cms.getBPDescriptionList();
 
     const producerList = await Promise.all([bpListPromise, cmsListPromise]).then(([bpList, cmsList]) =>
