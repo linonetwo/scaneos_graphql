@@ -4,8 +4,6 @@ import fetch from 'node-fetch';
 import camelize from 'camelize';
 import it from 'param.macro';
 
-import { postEOS } from '../../../API.config';
-
 /** sample 是为了减小数据量，每隔几个数据才取一次 */
 function sampleChartValues(sampleRate: number, data: any[]) {
   const sampleInterval = Math.min(Math.max(Math.floor(1 / sampleRate), 1), data.length);
@@ -41,17 +39,9 @@ export default {
         ),
       );
   },
-  resourcePrice(_: any, __: any, ___: any, { cacheControl }: Object) {
-    cacheControl.setCacheHint({ maxAge: 10 });
-
+  resourcePrice(_: any, __: any, { dataSources }) {
     return Promise.all([
-      postEOS('/chain/get_table_rows', {
-        json: true,
-        code: 'eosio',
-        scope: 'eosio',
-        table: 'rammarket',
-        limit: 1,
-      }).then(({ rows: [{ supply, base, quote }] }) => {
+      dataSources.eos.getRamMarketInfo().then(({ rows: [{ supply, base, quote }] }) => {
         const totalSupply = Number(supply.substr(0, supply.indexOf(' ')));
         const ramVolumn = Number(base.balance.substr(0, base.balance.indexOf(' ')));
         const ramMarketcap = Number(quote.balance.substr(0, quote.balance.indexOf(' ')));
@@ -62,22 +52,24 @@ export default {
           ramPrice: (ramMarketcap / ramVolumn) * 1024, // price in kB
         };
       }),
-      postEOS('/chain/get_account', { account_name: 'eoshuobipool' }).then(
-        ({
-          totalResources: { netWeight, cpuWeight },
-          netLimit: { max: netMaxLimit },
-          cpuLimit: { max: cpuMaxLimit },
-        }) => {
-          const netStaked = netWeight.replace(' EOS', '');
-          const cpuStaked = cpuWeight.replace(' EOS', '');
-          const netAvailable = netMaxLimit / 1024; // byte to kB
-          const cpuAvailable = cpuMaxLimit / 1000; // microseconds to milliseconds
-          return {
-            netPrice: netStaked / netAvailable,
-            cpuPrice: (cpuStaked / cpuAvailable) * 1000, // use second as unit
-          };
-        },
-      ),
+      dataSources.eos
+        .getAccountInfo('eoshuobipool')
+        .then(
+          ({
+            totalResources: { netWeight, cpuWeight },
+            netLimit: { max: netMaxLimit },
+            cpuLimit: { max: cpuMaxLimit },
+          }) => {
+            const netStaked = netWeight.replace(' EOS', '');
+            const cpuStaked = cpuWeight.replace(' EOS', '');
+            const netAvailable = netMaxLimit / 1024; // byte to kB
+            const cpuAvailable = cpuMaxLimit / 1000; // microseconds to milliseconds
+            return {
+              netPrice: netStaked / netAvailable,
+              cpuPrice: (cpuStaked / cpuAvailable) * 1000, // use second as unit
+            };
+          },
+        ),
     ])
       .then(([{ supply, ramVolumn, ramMarketcap, ramPrice }, { netPrice, cpuPrice }]) => ({
         supply,

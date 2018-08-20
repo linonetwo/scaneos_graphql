@@ -4,11 +4,11 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { importSchema } from 'graphql-import';
 import { ApolloServer } from 'apollo-server-express';
-import { ApolloEngine } from 'apollo-engine';
 import chalk from 'chalk';
 import { CMS_TOKEN, GRAPHQL_API } from '../API.config';
 
 import CMS from './dataSources/cms';
+import EOS from './dataSources/eos';
 import resolvers from './resolvers';
 // Import schema.graphql by relative path to where we run "yarn start"
 const typeDefs = importSchema('./server/graphql/schema.graphql');
@@ -37,6 +37,7 @@ const server = new ApolloServer({
   introspection: true,
   dataSources: () => ({
     cms: new CMS(),
+    eos: new EOS(),
   }),
   cacheControl: {
     defaultMaxAge: 5,
